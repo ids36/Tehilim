@@ -2,17 +2,12 @@
 // אפליקציית תהילים
 // ==========================================
 
-
-// ------------------------------------------
-// משתנה: איזה פרק פתוח כרגע
-// ------------------------------------------
-
 let currentChapter = null;
 
 
-// ------------------------------------------
+// ==========================================
 // המרה ממספר לאותיות עבריות
-// ------------------------------------------
+// ==========================================
 
 function numberToHebrew(number) {
 
@@ -52,7 +47,6 @@ function numberToHebrew(number) {
 
     }
 
-    // ט"ו וט"ז
     if (result === "יה") {
         result = "טו";
     }
@@ -61,19 +55,17 @@ function numberToHebrew(number) {
         result = "טז";
     }
 
-    // אות אחת = גרש
     if (result.length === 1) {
         return result + "׳";
     }
 
-    // כמה אותיות = גרשיים
     return result.slice(0, -1) + "״" + result.slice(-1);
 }
 
 
-// ------------------------------------------
-// יצירת 150 הכפתורים
-// ------------------------------------------
+// ==========================================
+// יצירת 150 פרקים
+// ==========================================
 
 function createChapterButtons() {
 
@@ -102,9 +94,137 @@ function createChapterButtons() {
 }
 
 
-// ------------------------------------------
-// מעבר למסך הבית
-// ------------------------------------------
+// ==========================================
+// חלוקת תהילים לפי ימי השבוע
+// ==========================================
+
+const weeklyChapters = {
+
+    0: {
+        name: "יום ראשון",
+        chapters: [1, 29]
+    },
+
+    1: {
+        name: "יום שני",
+        chapters: [30, 50]
+    },
+
+    2: {
+        name: "יום שלישי",
+        chapters: [51, 72]
+    },
+
+    3: {
+        name: "יום רביעי",
+        chapters: [73, 89]
+    },
+
+    4: {
+        name: "יום חמישי",
+        chapters: [90, 106]
+    },
+
+    5: {
+        name: "יום שישי",
+        chapters: [107, 119]
+    },
+
+    6: {
+        name: "שבת",
+        chapters: [120, 150]
+    }
+
+};
+
+
+// ==========================================
+// יצירת רשימת הפרקים של היום
+// ==========================================
+
+function createDayChapterButtons() {
+
+    const container =
+        document.getElementById("day-chapters");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const today = new Date().getDay();
+
+    const dayData = weeklyChapters[today];
+
+    for (
+        let i = dayData.chapters[0];
+        i <= dayData.chapters[1];
+        i++
+    ) {
+
+        const button =
+            document.createElement("button");
+
+        button.className = "chapter-button";
+
+        button.textContent =
+            numberToHebrew(i);
+
+        button.onclick = function () {
+
+            openChapter(i);
+
+        };
+
+        container.appendChild(button);
+    }
+}
+
+
+// ==========================================
+// פתיחת מסך לפי יום
+// ==========================================
+
+window.showDays = function () {
+
+    document
+        .getElementById("home-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("chapters-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("reading-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("days-screen")
+        .classList.remove("hidden");
+
+
+    const today =
+        new Date().getDay();
+
+    const dayData =
+        weeklyChapters[today];
+
+
+    document
+        .getElementById("today-title")
+        .textContent =
+        "היום " + dayData.name;
+
+
+    createDayChapterButtons();
+};
+
+
+// ==========================================
+// חזרה למסך הבית
+// ==========================================
 
 window.showHome = function () {
 
@@ -117,19 +237,27 @@ window.showHome = function () {
         .classList.add("hidden");
 
     document
+        .getElementById("days-screen")
+        .classList.add("hidden");
+
+    document
         .getElementById("reading-screen")
         .classList.add("hidden");
 };
 
 
-// ------------------------------------------
-// מעבר למסך הפרקים
-// ------------------------------------------
+// ==========================================
+// מסך לפי פרק
+// ==========================================
 
 window.showChapters = function () {
 
     document
         .getElementById("home-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("days-screen")
         .classList.add("hidden");
 
     document
@@ -142,9 +270,9 @@ window.showChapters = function () {
 };
 
 
-// ------------------------------------------
-// מעבר למסך הקריאה
-// ------------------------------------------
+// ==========================================
+// מסך קריאה
+// ==========================================
 
 function showReadingScreen() {
 
@@ -157,14 +285,18 @@ function showReadingScreen() {
         .classList.add("hidden");
 
     document
+        .getElementById("days-screen")
+        .classList.add("hidden");
+
+    document
         .getElementById("reading-screen")
         .classList.remove("hidden");
 }
 
 
-// ------------------------------------------
+// ==========================================
 // פתיחת פרק
-// ------------------------------------------
+// ==========================================
 
 window.openChapter = async function (chapterNumber) {
 
@@ -186,7 +318,8 @@ window.openChapter = async function (chapterNumber) {
 
 
     title.textContent =
-        "תהילים " + numberToHebrew(chapterNumber);
+        "תהילים " +
+        numberToHebrew(chapterNumber);
 
 
     textContainer.innerHTML = "";
@@ -252,19 +385,20 @@ window.openChapter = async function (chapterNumber) {
         textContainer.innerHTML = "";
 
         error.classList.remove("hidden");
+
     }
+
 };
 
 
-// ------------------------------------------
-// הצגת הפסוקים
-// ------------------------------------------
+// ==========================================
+// הצגת פסוקים
+// ==========================================
 
 function displayVerses(verses) {
 
     const container =
         document.getElementById("reading-text");
-
 
     container.innerHTML = "";
 
@@ -275,9 +409,9 @@ function displayVerses(verses) {
             document.createElement("div");
 
 
-        verseElement.className = "verse";
+        verseElement.className =
+            "verse";
 
-        verse = verse.replace(/\s*\{פ\}\s*$/g, "");
 
         verseElement.innerHTML =
             '<span class="verse-number">' +
@@ -291,12 +425,13 @@ function displayVerses(verses) {
         container.appendChild(verseElement);
 
     });
+
 }
 
 
-// ------------------------------------------
+// ==========================================
 // ניסיון נוסף
-// ------------------------------------------
+// ==========================================
 
 window.retryCurrentChapter = function () {
 
@@ -305,12 +440,13 @@ window.retryCurrentChapter = function () {
         openChapter(currentChapter);
 
     }
+
 };
 
 
-// ------------------------------------------
+// ==========================================
 // פרק קודם
-// ------------------------------------------
+// ==========================================
 
 window.previousChapter = function () {
 
@@ -319,12 +455,13 @@ window.previousChapter = function () {
         openChapter(currentChapter - 1);
 
     }
+
 };
 
 
-// ------------------------------------------
+// ==========================================
 // פרק הבא
-// ------------------------------------------
+// ==========================================
 
 window.nextChapter = function () {
 
@@ -333,12 +470,13 @@ window.nextChapter = function () {
         openChapter(currentChapter + 1);
 
     }
+
 };
 
 
-// ------------------------------------------
-// כשהעמוד נטען
-// ------------------------------------------
+// ==========================================
+// הפעלה
+// ==========================================
 
 document.addEventListener(
     "DOMContentLoaded",
