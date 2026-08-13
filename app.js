@@ -4,6 +4,13 @@
 
 
 // ------------------------------------------
+// משתנה: איזה פרק פתוח כרגע
+// ------------------------------------------
+
+let currentChapter = null;
+
+
+// ------------------------------------------
 // המרה ממספר לאותיות עבריות
 // ------------------------------------------
 
@@ -37,13 +44,15 @@ function numberToHebrew(number) {
     let result = "";
 
     for (const [value, letter] of values) {
+
         while (number >= value) {
             result += letter;
             number -= value;
         }
+
     }
 
-    // 15 ו-16 נכתבים ט"ו וט"ז
+    // ט"ו וט"ז
     if (result === "יה") {
         result = "טו";
     }
@@ -52,17 +61,18 @@ function numberToHebrew(number) {
         result = "טז";
     }
 
-    // גרש לאות אחת, גרשיים ליותר מאות אחת
+    // אות אחת = גרש
     if (result.length === 1) {
         return result + "׳";
     }
 
+    // כמה אותיות = גרשיים
     return result.slice(0, -1) + "״" + result.slice(-1);
 }
 
 
 // ------------------------------------------
-// יצירת 150 כפתורי הפרקים
+// יצירת 150 הכפתורים
 // ------------------------------------------
 
 function createChapterButtons() {
@@ -83,11 +93,9 @@ function createChapterButtons() {
 
         button.textContent = numberToHebrew(i);
 
-        button.addEventListener("click", function () {
-
+        button.onclick = function () {
             openChapter(i);
-
-        });
+        };
 
         container.appendChild(button);
     }
@@ -95,23 +103,98 @@ function createChapterButtons() {
 
 
 // ------------------------------------------
-// פתיחת פרק והבאת הטקסט מ-Sefaria
+// מעבר למסך הבית
 // ------------------------------------------
 
-async function openChapter(chapterNumber) {
+window.showHome = function () {
+
+    document
+        .getElementById("home-screen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("chapters-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("reading-screen")
+        .classList.add("hidden");
+};
+
+
+// ------------------------------------------
+// מעבר למסך הפרקים
+// ------------------------------------------
+
+window.showChapters = function () {
+
+    document
+        .getElementById("home-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("reading-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("chapters-screen")
+        .classList.remove("hidden");
+};
+
+
+// ------------------------------------------
+// מעבר למסך הקריאה
+// ------------------------------------------
+
+function showReadingScreen() {
+
+    document
+        .getElementById("home-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("chapters-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("reading-screen")
+        .classList.remove("hidden");
+}
+
+
+// ------------------------------------------
+// פתיחת פרק
+// ------------------------------------------
+
+window.openChapter = async function (chapterNumber) {
+
+    currentChapter = chapterNumber;
 
     showReadingScreen();
 
-    const title = document.getElementById("reading-title");
-    const textContainer = document.getElementById("reading-text");
-    const errorContainer = document.getElementById("reading-error");
-    const loadingContainer = document.getElementById("reading-loading");
+    const title =
+        document.getElementById("reading-title");
 
-    title.textContent = "תהילים " + numberToHebrew(chapterNumber);
+    const textContainer =
+        document.getElementById("reading-text");
+
+    const loading =
+        document.getElementById("reading-loading");
+
+    const error =
+        document.getElementById("reading-error");
+
+
+    title.textContent =
+        "תהילים " + numberToHebrew(chapterNumber);
+
 
     textContainer.innerHTML = "";
-    errorContainer.classList.add("hidden");
-    loadingContainer.classList.remove("hidden");
+
+    error.classList.add("hidden");
+
+    loading.classList.remove("hidden");
+
 
     try {
 
@@ -120,40 +203,57 @@ async function openChapter(chapterNumber) {
             chapterNumber +
             "?version=hebrew&return_format=text_only";
 
-        const response = await fetch(url);
+
+        const response =
+            await fetch(url);
+
 
         if (!response.ok) {
-            throw new Error("Sefaria request failed");
+            throw new Error("Sefaria error");
         }
 
-        const data = await response.json();
 
-        if (!data.versions || data.versions.length === 0) {
-            throw new Error("No Hebrew version found");
+        const data =
+            await response.json();
+
+
+        if (
+            !data.versions ||
+            data.versions.length === 0
+        ) {
+            throw new Error("No text");
         }
 
-        const verses = data.versions[0].text;
 
-        if (!verses || verses.length === 0) {
-            throw new Error("No text found");
+        const verses =
+            data.versions[0].text;
+
+
+        if (
+            !verses ||
+            verses.length === 0
+        ) {
+            throw new Error("Empty text");
         }
 
-        loadingContainer.classList.add("hidden");
+
+        loading.classList.add("hidden");
+
 
         displayVerses(verses);
 
-    } catch (error) {
 
-        console.error(error);
+    } catch (err) {
 
-        loadingContainer.classList.add("hidden");
+        console.error(err);
+
+        loading.classList.add("hidden");
 
         textContainer.innerHTML = "";
 
-        errorContainer.classList.remove("hidden");
-
+        error.classList.remove("hidden");
     }
-}
+};
 
 
 // ------------------------------------------
@@ -162,15 +262,21 @@ async function openChapter(chapterNumber) {
 
 function displayVerses(verses) {
 
-    const container = document.getElementById("reading-text");
+    const container =
+        document.getElementById("reading-text");
+
 
     container.innerHTML = "";
 
+
     verses.forEach(function (verse, index) {
 
-        const verseElement = document.createElement("div");
+        const verseElement =
+            document.createElement("div");
+
 
         verseElement.className = "verse";
+
 
         verseElement.innerHTML =
             '<span class="verse-number">' +
@@ -179,6 +285,7 @@ function displayVerses(verses) {
             '<span>' +
             verse +
             '</span>';
+
 
         container.appendChild(verseElement);
 
@@ -190,119 +297,53 @@ function displayVerses(verses) {
 // ניסיון נוסף
 // ------------------------------------------
 
-function retryCurrentChapter() {
+window.retryCurrentChapter = function () {
 
     if (currentChapter !== null) {
 
         openChapter(currentChapter);
 
     }
-}
-
-
-// ------------------------------------------
-// משתנה ששומר את הפרק הנוכחי
-// ------------------------------------------
-
-let currentChapter = null;
-
-
-// ------------------------------------------
-// עטיפה כדי לזכור איזה פרק פתוח
-// ------------------------------------------
-
-const originalOpenChapter = openChapter;
-
-openChapter = async function(chapterNumber) {
-
-    currentChapter = chapterNumber;
-
-    await originalOpenChapter(chapterNumber);
-
 };
-
-
-// ------------------------------------------
-// מעבר למסך הפרקים
-// ------------------------------------------
-
-function showChapters() {
-
-    document.getElementById("home-screen").classList.add("hidden");
-
-    document.getElementById("reading-screen").classList.add("hidden");
-
-    document.getElementById("chapters-screen").classList.remove("hidden");
-
-}
-
-
-// ------------------------------------------
-// חזרה למסך הבית
-// ------------------------------------------
-
-function showHome() {
-
-    document.getElementById("chapters-screen").classList.add("hidden");
-
-    document.getElementById("reading-screen").classList.add("hidden");
-
-    document.getElementById("home-screen").classList.remove("hidden");
-
-}
-
-
-// ------------------------------------------
-// מעבר למסך הקריאה
-// ------------------------------------------
-
-function showReadingScreen() {
-
-    document.getElementById("home-screen").classList.add("hidden");
-
-    document.getElementById("chapters-screen").classList.add("hidden");
-
-    document.getElementById("reading-screen").classList.remove("hidden");
-
-}
 
 
 // ------------------------------------------
 // פרק קודם
 // ------------------------------------------
 
-function previousChapter() {
+window.previousChapter = function () {
 
     if (currentChapter > 1) {
 
         openChapter(currentChapter - 1);
 
     }
-
-}
+};
 
 
 // ------------------------------------------
 // פרק הבא
 // ------------------------------------------
 
-function nextChapter() {
+window.nextChapter = function () {
 
     if (currentChapter < 150) {
 
         openChapter(currentChapter + 1);
 
     }
-
-}
+};
 
 
 // ------------------------------------------
-// הפעלת האפליקציה
+// כשהעמוד נטען
 // ------------------------------------------
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    createChapterButtons();
+        createChapterButtons();
 
-});
+    }
+);
