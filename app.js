@@ -277,6 +277,7 @@ function displayVerses(verses) {
 
         verseElement.className = "verse";
 
+        verse = verse.replace(/\s*\{פ\}\s*$/g, "");
 
         verseElement.innerHTML =
             '<span class="verse-number">' +
