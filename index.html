@@ -200,6 +200,57 @@
 
 
         /* ==========================================
+           תפילות
+        ========================================== */
+
+        .prayer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .prayer-button {
+            width: 100%;
+            min-height: 58px;
+            border: none;
+            border-radius: 11px;
+            background: white;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            font-size: 18px;
+            text-align: right;
+            padding: 15px 18px;
+            cursor: pointer;
+        }
+
+        .prayer-button:active {
+            transform: scale(0.98);
+        }
+
+
+        /* ==========================================
+           מסך תפילה
+        ========================================== */
+
+        .prayer-reading-title {
+            text-align: center;
+            font-size: 28px;
+            margin: 5px 0 20px;
+        }
+
+        .prayer-text {
+            margin-top: 15px;
+            text-align: right;
+            font-size: 20px;
+            line-height: 1.9;
+        }
+
+        .prayer-paragraph {
+            margin-bottom: 18px;
+        }
+
+
+        /* ==========================================
            מסך קריאת פרק
         ========================================== */
 
@@ -408,7 +459,6 @@
 
     <div id="home-screen">
 
-        <!-- הרווח נשמר בכוונה -->
         <div class="top-icon">
             &nbsp;
         </div>
@@ -452,6 +502,17 @@
         >
             מועדפים
             <span class="emoji">❤️</span>
+        </button>
+
+
+        <!-- תפילות -->
+
+        <button
+            class="menu-button"
+            onclick="showPrayers()"
+        >
+            תפילות
+            <span class="emoji">🙏</span>
         </button>
 
     </div>
@@ -595,6 +656,103 @@
 
 
     <!-- ==========================================
+         תפילות
+    ========================================== -->
+
+    <div
+        id="prayers-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showHome()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1>
+            תפילות
+        </h1>
+
+
+        <div class="subtitle">
+            נוסח עדות המזרח
+        </div>
+
+
+        <div
+            id="prayers-list"
+            class="prayer-grid"
+        ></div>
+
+    </div>
+
+
+    <!-- ==========================================
+         קריאת תפילה
+    ========================================== -->
+
+    <div
+        id="prayer-reading-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="backFromPrayerReading()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1
+            id="prayer-reading-title"
+            class="prayer-reading-title"
+        >
+            תפילה
+        </h1>
+
+
+        <div
+            id="prayer-reading-loading"
+            class="loading hidden"
+        >
+            טוען את התפילה...
+        </div>
+
+
+        <div
+            id="prayer-reading-error"
+            class="error-box hidden"
+        >
+
+            <div>
+                קרתה תקלה צדיק/ה<br>
+                אל תתייאש/י נס/י שוב❤️
+            </div>
+
+
+            <button
+                class="retry-button"
+                onclick="retryCurrentPrayer()"
+            >
+                נסה/י שוב
+            </button>
+
+        </div>
+
+
+        <div
+            id="prayer-text"
+            class="prayer-text"
+        ></div>
+
+    </div>
+
+
+    <!-- ==========================================
          קריאת פרק
     ========================================== -->
 
@@ -606,8 +764,6 @@
         <div class="reading-header">
 
 
-            <!-- חזרה -->
-
             <button
                 class="reading-back"
                 onclick="backFromReading()"
@@ -615,8 +771,6 @@
                 → חזרה
             </button>
 
-
-            <!-- לב -->
 
             <button
                 id="favorite-button"
