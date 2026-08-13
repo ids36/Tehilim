@@ -28,6 +28,7 @@
             font-family: Arial, sans-serif;
             background: #f7f7f7;
             color: #222;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .container {
@@ -59,6 +60,66 @@
 
         .hidden {
             display: none !important;
+        }
+
+
+        /* ==========================================
+           פעולות עליונות במסך הבית
+        ========================================== */
+
+        .home-top-actions {
+            position: relative;
+            height: 45px;
+            margin-bottom: 5px;
+        }
+
+        .home-action-button {
+            position: absolute;
+            top: 0;
+
+            width: 44px;
+            height: 44px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: white;
+
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            color: #444;
+
+            transition:
+                transform 0.15s ease,
+                background 0.2s ease;
+        }
+
+        .home-action-button:active {
+            transform: scale(0.92);
+        }
+
+        .home-search-button {
+            left: 0;
+        }
+
+        .home-settings-button {
+            right: 0;
+        }
+
+        .home-action-button svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
 
@@ -456,6 +517,241 @@
             line-height: 1.6;
         }
 
+
+        /* ==========================================
+           חיפוש
+        ========================================== */
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 0;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
+            border-radius: 11px;
+            background: white;
+            color: #222;
+            font-size: 18px;
+            outline: none;
+            direction: rtl;
+        }
+
+        .search-input:focus {
+            border-color: #aaa;
+        }
+
+        .search-submit {
+            border: none;
+            border-radius: 11px;
+            padding: 0 18px;
+            background: white;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .search-submit:active {
+            transform: scale(0.97);
+        }
+
+        .search-results {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .search-result {
+            width: 100%;
+            border: none;
+            border-radius: 11px;
+            background: white;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            padding: 15px;
+            text-align: right;
+            cursor: pointer;
+        }
+
+        .search-result:active {
+            transform: scale(0.99);
+        }
+
+        .search-result-reference {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .search-result-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .search-status {
+            text-align: center;
+            color: #777;
+            margin-top: 30px;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+
+        /* ==========================================
+           הגדרות
+        ========================================== */
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .settings-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .settings-option {
+            border: none;
+            border-radius: 9px;
+            background: #f7f7f7;
+            padding: 12px 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .settings-option.active {
+            box-shadow: inset 0 0 0 2px #555;
+        }
+
+        .settings-option:active {
+            transform: scale(0.97);
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            font-size: 17px;
+        }
+
+        .settings-info {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .about-button {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            background: #f7f7f7;
+            padding: 14px;
+            font-size: 17px;
+            text-align: right;
+            cursor: pointer;
+        }
+
+
+        /* ==========================================
+           אודות
+        ========================================== */
+
+        .about-box {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: right;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        .about-box h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 22px;
+        }
+
+
+        /* ==========================================
+           מצב כהה
+        ========================================== */
+
+        body.dark-mode {
+            background: #151515;
+            color: #eee;
+        }
+
+        body.dark-mode .subtitle,
+        body.dark-mode .reading-day-title,
+        body.dark-mode .loading,
+        body.dark-mode .favorites-empty,
+        body.dark-mode .search-status,
+        body.dark-mode .settings-info,
+        body.dark-mode .memorial-text {
+            color: #aaa;
+        }
+
+        body.dark-mode .menu-button,
+        body.dark-mode .back-button,
+        body.dark-mode .chapter-button,
+        body.dark-mode .day-button,
+        body.dark-mode .prayer-button,
+        body.dark-mode .reading-back,
+        body.dark-mode .favorite-button,
+        body.dark-mode .navigation-button,
+        body.dark-mode .finish-button,
+        body.dark-mode .today-box,
+        body.dark-mode .search-input,
+        body.dark-mode .search-submit,
+        body.dark-mode .search-result,
+        body.dark-mode .settings-section,
+        body.dark-mode .about-box,
+        body.dark-mode .home-action-button {
+            background: #222;
+            color: #eee;
+        }
+
+        body.dark-mode .search-result-text {
+            color: #ccc;
+        }
+
+        body.dark-mode .search-input {
+            border-color: #444;
+        }
+
+        body.dark-mode .settings-option,
+        body.dark-mode .about-button {
+            background: #2d2d2d;
+            color: #eee;
+        }
+
+        body.dark-mode .settings-option.active {
+            box-shadow: inset 0 0 0 2px #aaa;
+        }
+
+        body.dark-mode .verse-number {
+            color: #aaa;
+        }
+
     </style>
 
 </head>
@@ -471,6 +767,62 @@
     ========================================== -->
 
     <div id="home-screen">
+
+        <div class="home-top-actions">
+
+            <button
+                class="home-action-button home-search-button"
+                onclick="showSearch()"
+                aria-label="חיפוש"
+            >
+
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <circle
+                        cx="11"
+                        cy="11"
+                        r="7"
+                    ></circle>
+
+                    <line
+                        x1="16.5"
+                        y1="16.5"
+                        x2="21"
+                        y2="21"
+                    ></line>
+
+                </svg>
+
+            </button>
+
+
+            <button
+                class="home-action-button home-settings-button"
+                onclick="showSettings()"
+                aria-label="הגדרות"
+            >
+
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="3"
+                    ></circle>
+
+                    <path
+                        d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.4 1.4-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L9 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7.7v-2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L9 9l1.4-1.4.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2h2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 9l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2h-.2a1.7 1.7 0 0 0-1.5 1z"
+                    ></path>
+                </svg>
+
+            </button>
+
+        </div>
+
 
         <div class="top-icon">
             &nbsp;
@@ -539,6 +891,239 @@
 
         <div class="memorial-text">
             לעילוי נשמת לירן שמשון בן אליהו ומלכה
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         חיפוש
+    ========================================== -->
+
+    <div
+        id="search-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showHome()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1>
+            חיפוש
+        </h1>
+
+
+        <div class="subtitle">
+            חפש מילה או פסוק בספר תהילים
+        </div>
+
+
+        <form
+            id="search-form"
+            class="search-box"
+        >
+
+            <input
+                id="search-input"
+                class="search-input"
+                type="search"
+                placeholder="לדוגמה: פחד, רפואה, לב..."
+                autocomplete="off"
+                enterkeyhint="search"
+            >
+
+            <button
+                class="search-submit"
+                type="submit"
+            >
+                חפש
+            </button>
+
+        </form>
+
+
+        <div
+            id="search-status"
+            class="search-status"
+        ></div>
+
+
+        <div
+            id="search-results"
+            class="search-results"
+        ></div>
+
+    </div>
+
+
+    <!-- ==========================================
+         הגדרות
+    ========================================== -->
+
+    <div
+        id="settings-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showHome()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1>
+            הגדרות
+        </h1>
+
+
+        <div class="subtitle">
+            התאמה אישית של האפליקציה
+        </div>
+
+
+        <div class="settings-section">
+
+            <div class="settings-title">
+                גודל המלל
+            </div>
+
+
+            <div class="settings-options">
+
+                <button
+                    id="font-small"
+                    class="settings-option"
+                    onclick="setFontSize('small')"
+                >
+                    קטן
+                </button>
+
+
+                <button
+                    id="font-medium"
+                    class="settings-option"
+                    onclick="setFontSize('medium')"
+                >
+                    רגיל
+                </button>
+
+
+                <button
+                    id="font-large"
+                    class="settings-option"
+                    onclick="setFontSize('large')"
+                >
+                    גדול
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-section">
+
+            <div class="settings-title">
+                מראה
+            </div>
+
+
+            <div class="settings-options">
+
+                <button
+                    id="theme-light"
+                    class="settings-option"
+                    onclick="setTheme('light')"
+                >
+                    בהיר
+                </button>
+
+
+                <button
+                    id="theme-dark"
+                    class="settings-option"
+                    onclick="setTheme('dark')"
+                >
+                    כהה
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="settings-section">
+
+            <div class="settings-title">
+                אודות
+            </div>
+
+
+            <button
+                class="about-button"
+                onclick="showAbout()"
+            >
+                אודות על האפליקציה
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         אודות
+    ========================================== -->
+
+    <div
+        id="about-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showSettings()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1>
+            אודות
+        </h1>
+
+
+        <div class="subtitle">
+            תהילים
+        </div>
+
+
+        <div class="about-box">
+
+            <h2>
+                תהילים
+            </h2>
+
+            <p>
+                אפליקציה לקריאת ספר תהילים, לפי פרק ולפי יום,
+                עם אפשרות לשמור פרקים למועדפים ולחפש בתוך ספר תהילים.
+            </p>
+
+            <p>
+                הטקסטים באפליקציה נטענים ממאגר Sefaria.
+            </p>
+
+            <p>
+                לעילוי נשמת לירן שמשון בן אליהו ומלכה
+            </p>
+
         </div>
 
     </div>
