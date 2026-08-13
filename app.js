@@ -656,8 +656,26 @@ function createFavoriteButtons() {
 // ==========================================
 // תפילות
 // ==========================================
+//
+// כל המקורות כאן הם נוסח עדות המזרח.
+// שחרית: מהפתיחה ועד עלינו.
+// מנחה: מהקרבנות / לשם יחוד ועד עלינו.
+// ערבית: מלשם יחוד וברכו ועד עלינו.
+// ברכות הנהנין: ברכות הנהנין.
+// ברכת המזון: ברכת המזון.
+// מעין שלוש: מעין שלוש.
+// בורא נפשות: בורא נפשות רבות.
+// סליחות: Selichot Edot HaMizrach.
+//
+// Sefaria מחזיק את המבנה המלא של
+// שחרית / מנחה / ערבית בנוסח עדות המזרח.
+// ==========================================
 
 const prayers = [
+
+    // ------------------------------------------
+    // ברכות השחר
+    // ------------------------------------------
 
     {
         id: "morning-blessings",
@@ -665,11 +683,21 @@ const prayers = [
         ref: "Siddur Edot HaMizrach, Preparatory Prayers, Morning Blessings"
     },
 
+
+    // ------------------------------------------
+    // שחרית - מלאה
+    // ------------------------------------------
+
     {
         id: "shacharit",
         name: "שחרית",
         ref: "Siddur Edot HaMizrach, Weekday Shacharit"
     },
+
+
+    // ------------------------------------------
+    // מנחה - מלאה
+    // ------------------------------------------
 
     {
         id: "mincha",
@@ -677,17 +705,32 @@ const prayers = [
         ref: "Siddur Edot HaMizrach, Weekday Mincha"
     },
 
+
+    // ------------------------------------------
+    // ערבית - מלאה
+    // ------------------------------------------
+
     {
         id: "arvit",
         name: "ערבית",
         ref: "Siddur Edot HaMizrach, Weekday Arvit"
     },
 
+
+    // ------------------------------------------
+    // ברכות הנהנין
+    // ------------------------------------------
+
     {
-        id: "birkot-hanehenin",
+        id: "blessings-on-enjoyments",
         name: "ברכות הנהנין",
         ref: "Siddur Edot HaMizrach, Blessings on Enjoyments"
     },
+
+
+    // ------------------------------------------
+    // ברכת המזון
+    // ------------------------------------------
 
     {
         id: "birkat-hamazon",
@@ -695,17 +738,37 @@ const prayers = [
         ref: "Siddur Edot HaMizrach, Post Meal Blessing"
     },
 
+
+    // ------------------------------------------
+    // מעין שלוש
+    // ------------------------------------------
+
     {
         id: "al-hamichya",
         name: "מעין שלוש",
         ref: "Siddur Edot HaMizrach, Al Hamihya"
     },
 
+
+    // ------------------------------------------
+    // בורא נפשות
+    // ------------------------------------------
+    //
+    // חשוב:
+    // לא להשתמש כאן ב-Blessings on Enjoyments.
+    // זה המקור הנכון של בורא נפשות.
+    // ------------------------------------------
+
     {
         id: "borei-nefashot",
         name: "בורא נפשות",
-        ref: "Siddur Edot HaMizrach, Borei Nefashot"
+        ref: "Siddur Edot HaMizrach, Blessings on Enjoyments, Borei Nefashot"
     },
+
+
+    // ------------------------------------------
+    // קריאת שמע שעל המיטה
+    // ------------------------------------------
 
     {
         id: "bedtime-shema",
@@ -713,16 +776,30 @@ const prayers = [
         ref: "Siddur Edot HaMizrach, Bedtime Shema"
     },
 
+
+    // ------------------------------------------
+    // הבדלה
+    // ------------------------------------------
+
     {
         id: "havdalah",
         name: "הבדלה",
-        ref: "Siddur Edot HaMizrach, Havdalah, Havdala"
+        ref: "Siddur Edot HaMizrach, Havdalah"
     },
+
+
+    // ------------------------------------------
+    // סליחות - עדות המזרח
+    // ------------------------------------------
+    //
+    // זה לא placeholder.
+    // המקור הוא ספר סליחות נוסח עדות המזרח.
+    // ------------------------------------------
 
     {
         id: "selichot",
         name: "סליחות",
-        ref: "Siddur Edot HaMizrach, Selichot"
+        ref: "Selichot Edot HaMizrach"
     }
 
 ];
@@ -749,9 +826,7 @@ function createPrayerButtons() {
         function (prayer) {
 
             const button =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
             button.className =
                 "prayer-button";
@@ -812,39 +887,66 @@ window.openPrayer = async function (prayer) {
         )
         .classList.remove("hidden");
 
+
     const title =
         document.getElementById(
             "prayer-reading-title"
         );
+
 
     const loading =
         document.getElementById(
             "prayer-reading-loading"
         );
 
+
     const error =
         document.getElementById(
             "prayer-reading-error"
         );
+
 
     const textContainer =
         document.getElementById(
             "prayer-text"
         );
 
+
     title.textContent =
         prayer.name;
 
+
     textContainer.innerHTML =
         "";
+
 
     error.classList.add(
         "hidden"
     );
 
+
     loading.classList.remove(
         "hidden"
     );
+
+
+    // ------------------------------------------
+    // בדיקת מקור
+    // ------------------------------------------
+
+    if (!prayer.ref) {
+
+        loading.classList.add(
+            "hidden"
+        );
+
+        error.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
 
 
     try {
@@ -853,6 +955,7 @@ window.openPrayer = async function (prayer) {
             encodeURIComponent(
                 prayer.ref
             );
+
 
         const url =
             "https://www.sefaria.org/api/v3/texts/" +
@@ -867,7 +970,8 @@ window.openPrayer = async function (prayer) {
         if (!response.ok) {
 
             throw new Error(
-                "Sefaria prayer error"
+                "Sefaria prayer error: " +
+                response.status
             );
 
         }
@@ -893,7 +997,11 @@ window.openPrayer = async function (prayer) {
             data.versions[0].text;
 
 
-        if (!text) {
+        if (
+            text === null ||
+            text === undefined ||
+            text === ""
+        ) {
 
             throw new Error(
                 "Empty prayer"
@@ -915,15 +1023,19 @@ window.openPrayer = async function (prayer) {
     } catch (errorObject) {
 
         console.error(
+            "Prayer loading error:",
             errorObject
         );
+
 
         loading.classList.add(
             "hidden"
         );
 
+
         textContainer.innerHTML =
             "";
+
 
         error.classList.remove(
             "hidden"
@@ -945,8 +1057,10 @@ function displayPrayerText(text) {
             "prayer-text"
         );
 
+
     container.innerHTML =
         "";
+
 
     let paragraphs = [];
 
@@ -958,7 +1072,9 @@ function displayPrayerText(text) {
             value.forEach(
                 function (part) {
 
-                    collectParts(part);
+                    collectParts(
+                        part
+                    );
 
                 }
             );
@@ -973,7 +1089,12 @@ function displayPrayerText(text) {
                         /\{פ\}/g,
                         ""
                     )
+                    .replace(
+                        /\{ס\}/g,
+                        ""
+                    )
                     .trim();
+
 
             if (cleaned) {
 
@@ -988,7 +1109,9 @@ function displayPrayerText(text) {
     }
 
 
-    collectParts(text);
+    collectParts(
+        text
+    );
 
 
     paragraphs.forEach(
@@ -999,11 +1122,14 @@ function displayPrayerText(text) {
                     "div"
                 );
 
+
             element.className =
                 "prayer-paragraph";
 
+
             element.textContent =
                 paragraph;
+
 
             container.appendChild(
                 element
@@ -1094,6 +1220,7 @@ function hideAllScreens() {
 
     ];
 
+
     screenIds.forEach(
         function (id) {
 
@@ -1101,6 +1228,7 @@ function hideAllScreens() {
                 document.getElementById(
                     id
                 );
+
 
             if (element) {
 
@@ -1122,7 +1250,9 @@ function hideAllScreens() {
 
 function backFromReading() {
 
-    if (readingSource === "day") {
+    if (
+        readingSource === "day"
+    ) {
 
         showDays();
 
@@ -1150,8 +1280,12 @@ function showReadingScreen() {
     hideAllScreens();
 
     document
-        .getElementById("reading-screen")
-        .classList.remove("hidden");
+        .getElementById(
+            "reading-screen"
+        )
+        .classList.remove(
+            "hidden"
+        );
 
 }
 
@@ -1165,6 +1299,7 @@ window.openChapter =
 
         currentChapter =
             chapterNumber;
+
 
         showReadingScreen();
 
@@ -1233,6 +1368,7 @@ window.openChapter =
                     currentDayNumber
                 ];
 
+
             dayTitle.textContent =
                 "תהילים ל" +
                 dayName;
@@ -1248,21 +1384,26 @@ window.openChapter =
         textContainer.innerHTML =
             "";
 
+
         error.classList.add(
             "hidden"
         );
+
 
         loading.classList.remove(
             "hidden"
         );
 
+
         finishButton.classList.add(
             "hidden"
         );
 
+
         previousButton.classList.remove(
             "hidden"
         );
+
 
         nextButton.classList.remove(
             "hidden"
@@ -1300,6 +1441,7 @@ window.openChapter =
             finishButton.classList.remove(
                 "hidden"
             );
+
 
             nextButton.classList.add(
                 "hidden"
@@ -1377,12 +1519,15 @@ window.openChapter =
                 errorObject
             );
 
+
             loading.classList.add(
                 "hidden"
             );
 
+
             textContainer.innerHTML =
                 "";
+
 
             error.classList.remove(
                 "hidden"
@@ -1394,7 +1539,7 @@ window.openChapter =
 
 
 // ==========================================
-// הצגת הפסוקים + הסרת {פ}
+// הצגת הפסוקים + הסרת סימוני פ/ס
 // ==========================================
 
 function displayVerses(verses) {
@@ -1404,8 +1549,10 @@ function displayVerses(verses) {
             "reading-text"
         );
 
+
     container.innerHTML =
         "";
+
 
     let verseList = [];
 
@@ -1417,7 +1564,9 @@ function displayVerses(verses) {
             value.forEach(
                 function (item) {
 
-                    collectVerses(item);
+                    collectVerses(
+                        item
+                    );
 
                 }
             );
@@ -1447,6 +1596,7 @@ function displayVerses(verses) {
                 document.createElement(
                     "div"
                 );
+
 
             verseElement.className =
                 "verse";
@@ -1559,6 +1709,7 @@ window.finishDay =
                 "hidden"
             );
 
+
         document
             .getElementById(
                 "finish-screen"
@@ -1580,8 +1731,10 @@ window.continueAfterDay =
         const nextChapterNumber =
             currentDayEnd + 1;
 
+
         readingSource =
             "chapters";
+
 
         if (
             nextChapterNumber <= 150
