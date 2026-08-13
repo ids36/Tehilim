@@ -1,1 +1,493 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>תהילים</title>
+
+    <link
+        rel="apple-touch-icon"
+        href="IMG_7996.jpeg"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 25px 15px 40px;
+        }
+
+        .top-icon {
+            font-size: 45px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-top: 8px;
+            margin-bottom: 25px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+
+        /* כפתורי תפריט */
+
+        .menu-button {
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-size: 18px;
+            text-align: right;
+            cursor: pointer;
+        }
+
+        .menu-button:active {
+            transform: scale(0.98);
+        }
+
+        .emoji {
+            margin-right: 10px;
+        }
+
+
+        /* כפתור חזרה */
+
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin-right: 0;
+            margin-left: auto;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 9px;
+            background: white;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
+        /* פרקים */
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chapter-button {
+            min-height: 48px;
+            border: none;
+            border-radius: 9px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .chapter-button:active {
+            transform: scale(0.95);
+        }
+
+
+        /* מסך קריאה */
+
+        .reading-header {
+            position: relative;
+            min-height: 55px;
+            margin-bottom: 15px;
+        }
+
+        .reading-back {
+            position: absolute;
+            right: 0;
+            top: 0;
+            border: none;
+            background: white;
+            border-radius: 9px;
+            padding: 10px 14px;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+        }
+
+        .reading-title {
+            padding-top: 8px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .reading-text {
+            margin-top: 15px;
+            text-align: right;
+            font-size: 20px;
+            line-height: 1.8;
+        }
+
+        .verse {
+            margin-bottom: 10px;
+        }
+
+        .verse-number {
+            display: inline-block;
+            min-width: 28px;
+            margin-left: 6px;
+            color: #777;
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+
+        /* טעינה */
+
+        .loading {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 17px;
+        }
+
+
+        /* תקלה */
+
+        .error-box {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .retry-button {
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            background: white;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
+        /* ניווט */
+
+        .chapter-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 35px;
+            gap: 15px;
+        }
+
+        .navigation-button {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            padding: 13px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .navigation-button:active {
+            transform: scale(0.98);
+        }
+
+        .navigation-button:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+
+        /* ימים */
+
+        .today-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .today-box h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .today-box p {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- מסך הבית -->
+
+    <div id="home-screen">
+
+        <div class="top-icon">
+            📖
+        </div>
+
+        <h1>
+            תהילים
+        </h1>
+
+        <div class="subtitle">
+            לקריאת תהילים בכל עת
+        </div>
+
+
+        <button
+            class="menu-button"
+            onclick="showChapters()"
+        >
+            לפי פרק
+            <span class="emoji">📖</span>
+        </button>
+
+
+        <button
+            class="menu-button"
+            onclick="showDays()"
+        >
+            לפי יום
+            <span class="emoji">📅</span>
+        </button>
+
+
+        <button class="menu-button">
+            לפי יום בחודש
+            <span class="emoji">🗓️</span>
+        </button>
+
+
+        <button class="menu-button">
+            לפי נושא
+            <span class="emoji">❤️</span>
+        </button>
+
+    </div>
+
+
+
+    <!-- מסך לפי פרק -->
+
+    <div
+        id="chapters-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showHome()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1>
+            לפי פרק
+        </h1>
+
+
+        <div class="subtitle">
+            בחר את הפרק שברצונך לקרוא
+        </div>
+
+
+        <div
+            id="chapters"
+            class="chapter-grid"
+        ></div>
+
+    </div>
+
+
+
+    <!-- מסך לפי יום -->
+
+    <div
+        id="days-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showHome()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1>
+            לפי יום
+        </h1>
+
+
+        <div class="subtitle">
+            חלוקת ספר תהילים לפי ימי השבוע
+        </div>
+
+
+        <div class="today-box">
+
+            <h2 id="today-title">
+                היום
+            </h2>
+
+            <p>
+                אלו הפרקים של היום
+            </p>
+
+        </div>
+
+
+        <div
+            id="day-chapters"
+            class="chapter-grid"
+        ></div>
+
+    </div>
+
+
+
+    <!-- מסך קריאה -->
+
+    <div
+        id="reading-screen"
+        class="hidden"
+    >
+
+        <div class="reading-header">
+
+            <button
+                class="reading-back"
+                onclick="showChapters()"
+            >
+                → חזרה לפרקים
+            </button>
+
+
+            <h1
+                id="reading-title"
+                class="reading-title"
+            >
+                תהילים
+            </h1>
+
+        </div>
+
+
+        <div
+            id="reading-loading"
+            class="loading hidden"
+        >
+            טוען את הפרק...
+        </div>
+
+
+        <div
+            id="reading-error"
+            class="error-box hidden"
+        >
+
+            <div>
+                קרתה תקלה צדיק/ה<br>
+                אל תתייאש/י נס/י שוב❤️
+            </div>
+
+
+            <button
+                class="retry-button"
+                onclick="retryCurrentChapter()"
+            >
+                נסה/י שוב
+            </button>
+
+        </div>
+
+
+        <div
+            id="reading-text"
+            class="reading-text"
+        ></div>
+
+
+        <div class="chapter-navigation">
+
+            <button
+                class="navigation-button"
+                onclick="previousChapter()"
+            >
+                פרק קודם →
+            </button>
+
+
+            <button
+                class="navigation-button"
+                onclick="nextChapter()"
+            >
+                ← פרק הבא
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
