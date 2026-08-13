@@ -656,67 +656,88 @@ function createFavoriteButtons() {
 // ==========================================
 // תפילות
 // ==========================================
+//
+// ההפניות כאן מבוססות על מבנה
+// Siddur Edot HaMizrach של Sefaria.
+// ==========================================
 
 const prayers = [
 
     {
         id: "morning-blessings",
         name: "ברכות השחר",
-        ref: "Siddur Edot HaMizrach, Preparatory Prayers, Morning Blessings"
+        ref:
+            "Siddur Edot HaMizrach, Preparatory Prayers, Morning Blessings"
     },
 
     {
         id: "shacharit",
         name: "שחרית",
-        ref: "Siddur Edot HaMizrach, Weekday Shacharit"
+        ref:
+            "Siddur Edot HaMizrach, Weekday Shacharit, Morning Prayer"
     },
 
     {
         id: "mincha",
         name: "מנחה",
-        ref: "Siddur Edot HaMizrach, Weekday Mincha"
+        ref:
+            "Siddur Edot HaMizrach, Weekday Mincha, Amida"
     },
 
     {
         id: "arvit",
         name: "ערבית",
-        ref: "Siddur Edot HaMizrach, Weekday Arvit"
+        ref:
+            "Siddur Edot HaMizrach, Weekday Arvit, Amidah"
+    },
+
+    {
+        id: "blessings-enjoyments",
+        name: "ברכות הנהנין",
+        ref:
+            "Siddur Edot HaMizrach, Post Meal Blessing, Blessings on Enjoyments"
     },
 
     {
         id: "birkat-hamazon",
         name: "ברכת המזון",
-        ref: "Siddur Edot HaMizrach, Post Meal Blessing"
+        ref:
+            "Siddur Edot HaMizrach, Post Meal Blessing"
     },
 
     {
         id: "al-hamichya",
         name: "מעין שלוש",
-        ref: "Siddur Edot HaMizrach, Al Hamihya"
+        ref:
+            "Siddur Edot HaMizrach, Post Meal Blessing, Al Hamihya"
     },
 
     {
         id: "borei-nefashot",
         name: "בורא נפשות",
-        ref: "Siddur Edot HaMizrach, Blessings on Enjoyments"
+        ref:
+            "Siddur Edot HaMizrach, Post Meal Blessing, Blessings on Enjoyments"
     },
 
     {
         id: "bedtime-shema",
         name: "קריאת שמע שעל המיטה",
-        ref: "Siddur Edot HaMizrach, Bedtime Shema"
+        ref:
+            "Siddur Edot HaMizrach, Bedtime Shema"
     },
 
     {
         id: "havdalah",
         name: "הבדלה",
-        ref: "Siddur Edot HaMizrach, Havdalah, Havdala"
+        ref:
+            "Siddur Edot HaMizrach, Havdalah, Havdala"
     },
 
     {
         id: "selichot",
         name: "סליחות",
-        ref: null
+        ref:
+            "Siddur Edot HaMizrach, Fast Days and Mourning, Slichot"
     }
 
 ];
@@ -743,9 +764,7 @@ function createPrayerButtons() {
         function (prayer) {
 
             const button =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
             button.className =
                 "prayer-button";
@@ -787,6 +806,77 @@ window.showPrayers = function () {
     createPrayerButtons();
 
 };
+
+
+// ==========================================
+// בניית URL ל-Sefaria
+// ==========================================
+
+function buildSefariaUrl(ref) {
+
+    const encodedRef =
+        encodeURIComponent(ref);
+
+    return (
+        "https://www.sefaria.org/api/v3/texts/" +
+        encodedRef +
+        "?version=hebrew&return_format=text_only"
+    );
+
+}
+
+
+// ==========================================
+// שליפת טקסט מ-Sefaria
+// ==========================================
+
+async function fetchSefariaText(ref) {
+
+    const response =
+        await fetch(
+            buildSefariaUrl(ref)
+        );
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Sefaria error"
+        );
+
+    }
+
+    const data =
+        await response.json();
+
+    if (
+        !data.versions ||
+        data.versions.length === 0
+    ) {
+
+        throw new Error(
+            "No versions"
+        );
+
+    }
+
+    const text =
+        data.versions[0].text;
+
+    if (
+        text === null ||
+        text === undefined ||
+        text === ""
+    ) {
+
+        throw new Error(
+            "Empty text"
+        );
+
+    }
+
+    return text;
+
+}
 
 
 // ==========================================
@@ -841,93 +931,25 @@ window.openPrayer = async function (prayer) {
     );
 
 
-    // סליחות עדיין לא מחוברות
-    // עד שנבחר את הסדר המדויק שלהן
-
-    if (!prayer.ref) {
-
-        loading.classList.add(
-            "hidden"
-        );
-
-        textContainer.innerHTML =
-            "<div class='error-box'>" +
-            "סליחות יתווספו כאן בקרוב בעזרת ה׳❤️" +
-            "</div>";
-
-        return;
-
-    }
-
-
     try {
 
-        const encodedRef =
-            encodeURIComponent(
+        const text =
+            await fetchSefariaText(
                 prayer.ref
             );
 
-        const url =
-            "https://www.sefaria.org/api/v3/texts/" +
-            encodedRef +
-            "?version=hebrew&return_format=text_only";
-
-
-        const response =
-            await fetch(url);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Sefaria prayer error"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.versions ||
-            data.versions.length === 0
-        ) {
-
-            throw new Error(
-                "Prayer text unavailable"
-            );
-
-        }
-
-
-        const text =
-            data.versions[0].text;
-
-
-        if (!text) {
-
-            throw new Error(
-                "Empty prayer"
-            );
-
-        }
-
-
         loading.classList.add(
             "hidden"
         );
-
 
         displayPrayerText(
             text
         );
 
-
     } catch (errorObject) {
 
         console.error(
+            "Prayer error:",
             errorObject
         );
 
@@ -964,6 +986,22 @@ function displayPrayerText(text) {
     let paragraphs = [];
 
 
+    function cleanText(value) {
+
+        return value
+            .replace(
+                /\{פ\}/g,
+                ""
+            )
+            .replace(
+                /\{ס\}/g,
+                ""
+            )
+            .trim();
+
+    }
+
+
     function collectParts(value) {
 
         if (Array.isArray(value)) {
@@ -981,12 +1019,7 @@ function displayPrayerText(text) {
         ) {
 
             const cleaned =
-                value
-                    .replace(
-                        /\{פ\}/g,
-                        ""
-                    )
-                    .trim();
+                cleanText(value);
 
             if (cleaned) {
 
@@ -1187,42 +1220,35 @@ window.openChapter =
                 "reading-title"
             );
 
-
         const dayTitle =
             document.getElementById(
                 "reading-day-title"
             );
-
 
         const textContainer =
             document.getElementById(
                 "reading-text"
             );
 
-
         const loading =
             document.getElementById(
                 "reading-loading"
             );
-
 
         const error =
             document.getElementById(
                 "reading-error"
             );
 
-
         const finishButton =
             document.getElementById(
                 "finish-button"
             );
 
-
         const previousButton =
             document.getElementById(
                 "previous-button"
             );
-
 
         const nextButton =
             document.getElementById(
@@ -1419,7 +1445,6 @@ function displayVerses(verses) {
 
     container.innerHTML =
         "";
-
 
     let verseList = [];
 
