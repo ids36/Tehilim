@@ -60,10 +60,6 @@
             display: none !important;
         }
 
-        /* ==============================
-           כפתורי תפריט
-        ============================== */
-
         .menu-button {
             width: 100%;
             padding: 18px;
@@ -85,10 +81,6 @@
             margin-right: 10px;
         }
 
-        /* ==============================
-           כפתור חזרה
-        ============================== */
-
         .back-button {
             display: block;
             width: fit-content;
@@ -103,10 +95,6 @@
             font-size: 16px;
             cursor: pointer;
         }
-
-        /* ==============================
-           כפתורי פרקים
-        ============================== */
 
         .chapter-grid {
             display: grid;
@@ -128,10 +116,6 @@
         .chapter-button:active {
             transform: scale(0.95);
         }
-
-        /* ==============================
-           לפי יום
-        ============================== */
 
         .today-box {
             background: white;
@@ -179,10 +163,6 @@
         .day-button:active {
             transform: scale(0.97);
         }
-
-        /* ==============================
-           מסך קריאה
-        ============================== */
 
         .reading-header {
             position: relative;
@@ -236,20 +216,12 @@
             vertical-align: top;
         }
 
-        /* ==============================
-           טעינה
-        ============================== */
-
         .loading {
             text-align: center;
             margin-top: 40px;
             color: #666;
             font-size: 17px;
         }
-
-        /* ==============================
-           תקלה
-        ============================== */
 
         .error-box {
             text-align: center;
@@ -268,10 +240,6 @@
             font-size: 16px;
             cursor: pointer;
         }
-
-        /* ==============================
-           ניווט בין פרקים
-        ============================== */
 
         .chapter-navigation {
             display: flex;
@@ -295,10 +263,6 @@
         .navigation-button:active {
             transform: scale(0.98);
         }
-
-        /* ==============================
-           מסך סיום
-        ============================== */
 
         .finish-screen {
             min-height: 70vh;
@@ -342,10 +306,6 @@
 <div class="container">
 
 
-    <!-- ==================================
-         מסך ראשי
-    ================================== -->
-
     <div id="home-screen">
 
         <div class="top-icon">
@@ -387,10 +347,6 @@
     </div>
 
 
-    <!-- ==================================
-         לפי פרק
-    ================================== -->
-
     <div
         id="chapters-screen"
         class="hidden"
@@ -421,10 +377,6 @@
 
     </div>
 
-
-    <!-- ==================================
-         לפי יום
-    ================================== -->
 
     <div
         id="days-screen"
@@ -480,10 +432,6 @@
 
     </div>
 
-
-    <!-- ==================================
-         קריאת פרק
-    ================================== -->
 
     <div
         id="reading-screen"
@@ -554,31 +502,21 @@
         <div class="chapter-navigation">
 
 
-            <!--
-                בצד ימין:
-                ← פרק קודם
-            -->
-
             <button
                 id="previous-button"
                 class="navigation-button"
                 onclick="previousChapter()"
             >
-                ← פרק קודם
+                <- פרק קודם
             </button>
 
-
-            <!--
-                בצד שמאל:
-                פרק הבא →
-            -->
 
             <button
                 id="next-button"
                 class="navigation-button"
                 onclick="nextChapter()"
             >
-                פרק הבא →
+                פרק הבא ->
             </button>
 
 
@@ -594,10 +532,6 @@
 
     </div>
 
-
-    <!-- ==================================
-         מסך סיום
-    ================================== -->
 
     <div
         id="finish-screen"
