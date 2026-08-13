@@ -490,11 +490,26 @@
         </button>
 
 
-        <button class="menu-button">
+        <button
+            class="menu-button"
+        >
             לפי נושא
             <span class="emoji">🎯</span>
         </button>
 
+
+        <!-- תפילות לפני מועדפים -->
+
+        <button
+            class="menu-button"
+            onclick="showPrayers()"
+        >
+            תפילות
+            <span class="emoji">🙏🏼</span>
+        </button>
+
+
+        <!-- מועדפים מתחת לתפילות -->
 
         <button
             class="menu-button"
@@ -502,17 +517,6 @@
         >
             מועדפים
             <span class="emoji">❤️</span>
-        </button>
-
-
-        <!-- תפילות -->
-
-        <button
-            class="menu-button"
-            onclick="showPrayers()"
-        >
-            תפילות
-            <span class="emoji">🙏</span>
         </button>
 
     </div>
@@ -534,16 +538,13 @@
             → חזרה
         </button>
 
-
         <h1>
             לפי פרק
         </h1>
 
-
         <div class="subtitle">
             בחר את הפרק שברצונך לקרוא
         </div>
-
 
         <div
             id="chapters"
@@ -569,22 +570,18 @@
             → חזרה
         </button>
 
-
         <h1>
             מועדפים
         </h1>
-
 
         <div class="subtitle">
             הפרקים ששמרת
         </div>
 
-
         <div
             id="favorites"
             class="chapter-grid"
         ></div>
-
 
         <div
             id="favorites-empty"
@@ -612,16 +609,13 @@
             → חזרה
         </button>
 
-
         <h1>
             לפי יום
         </h1>
 
-
         <div class="subtitle">
             חלוקת ספר תהילים לפי ימי השבוע
         </div>
-
 
         <div class="today-box">
 
@@ -635,17 +629,14 @@
 
         </div>
 
-
         <div
             id="day-chapters"
             class="chapter-grid"
         ></div>
 
-
         <h2 class="other-days-title">
             לימים נוספים
         </h2>
-
 
         <div
             id="other-days"
@@ -671,16 +662,13 @@
             → חזרה
         </button>
 
-
         <h1>
             תפילות
         </h1>
 
-
         <div class="subtitle">
             נוסח עדות המזרח
         </div>
-
 
         <div
             id="prayers-list"
@@ -706,7 +694,6 @@
             → חזרה
         </button>
 
-
         <h1
             id="prayer-reading-title"
             class="prayer-reading-title"
@@ -714,14 +701,12 @@
             תפילה
         </h1>
 
-
         <div
             id="prayer-reading-loading"
             class="loading hidden"
         >
             טוען את התפילה...
         </div>
-
 
         <div
             id="prayer-reading-error"
@@ -733,7 +718,6 @@
                 אל תתייאש/י נס/י שוב❤️
             </div>
 
-
             <button
                 class="retry-button"
                 onclick="retryCurrentPrayer()"
@@ -742,7 +726,6 @@
             </button>
 
         </div>
-
 
         <div
             id="prayer-text"
@@ -763,14 +746,12 @@
 
         <div class="reading-header">
 
-
             <button
                 class="reading-back"
                 onclick="backFromReading()"
             >
                 → חזרה
             </button>
-
 
             <button
                 id="favorite-button"
@@ -781,12 +762,10 @@
                 ♡
             </button>
 
-
             <div
                 id="reading-day-title"
                 class="reading-day-title"
             ></div>
-
 
             <h1
                 id="reading-title"
@@ -797,14 +776,12 @@
 
         </div>
 
-
         <div
             id="reading-loading"
             class="loading hidden"
         >
             טוען את הפרק...
         </div>
-
 
         <div
             id="reading-error"
@@ -816,7 +793,6 @@
                 אל תתייאש/י נס/י שוב❤️
             </div>
 
-
             <button
                 class="retry-button"
                 onclick="retryCurrentChapter()"
@@ -826,15 +802,12 @@
 
         </div>
 
-
         <div
             id="reading-text"
             class="reading-text"
         ></div>
 
-
         <div class="chapter-navigation">
-
 
             <button
                 id="previous-button"
@@ -844,7 +817,6 @@
                 → פרק קודם
             </button>
 
-
             <button
                 id="next-button"
                 class="navigation-button"
@@ -852,7 +824,6 @@
             >
                 פרק הבא ←
             </button>
-
 
             <button
                 id="finish-button"
@@ -883,14 +854,12 @@
                 סיימת את פרקי היום❤️
             </div>
 
-
             <button
                 class="finish-button"
                 onclick="showHome()"
             >
                 חזרה למסך הראשי
             </button>
-
 
             <button
                 class="finish-button"
