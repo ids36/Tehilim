@@ -3,6 +3,11 @@
 // ==========================================
 
 let currentChapter = null;
+let readingSource = "chapters";
+
+let currentDayNumber = null;
+let currentDayStart = null;
+let currentDayEnd = null;
 
 
 // ==========================================
@@ -44,7 +49,6 @@ function numberToHebrew(number) {
             result += letter;
             number -= value;
         }
-
     }
 
     if (result === "יה") {
@@ -64,34 +68,18 @@ function numberToHebrew(number) {
 
 
 // ==========================================
-// יצירת 150 פרקים
+// שמות הימים
 // ==========================================
 
-function createChapterButtons() {
-
-    const container = document.getElementById("chapters");
-
-    if (!container) {
-        return;
-    }
-
-    container.innerHTML = "";
-
-    for (let i = 1; i <= 150; i++) {
-
-        const button = document.createElement("button");
-
-        button.className = "chapter-button";
-
-        button.textContent = numberToHebrew(i);
-
-        button.onclick = function () {
-            openChapter(i);
-        };
-
-        container.appendChild(button);
-    }
-}
+const dayNames = [
+    "יום ראשון",
+    "יום שני",
+    "יום שלישי",
+    "יום רביעי",
+    "יום חמישי",
+    "יום שישי",
+    "שבת"
+];
 
 
 // ==========================================
@@ -139,13 +127,12 @@ const weeklyChapters = {
 
 
 // ==========================================
-// יצירת רשימת הפרקים של היום
+// יצירת 150 פרקים
 // ==========================================
 
-function createDayChapterButtons() {
+function createChapterButtons() {
 
-    const container =
-        document.getElementById("day-chapters");
+    const container = document.getElementById("chapters");
 
     if (!container) {
         return;
@@ -153,25 +140,17 @@ function createDayChapterButtons() {
 
     container.innerHTML = "";
 
-    const today = new Date().getDay();
+    for (let i = 1; i <= 150; i++) {
 
-    const dayData = weeklyChapters[today];
-
-    for (
-        let i = dayData.chapters[0];
-        i <= dayData.chapters[1];
-        i++
-    ) {
-
-        const button =
-            document.createElement("button");
+        const button = document.createElement("button");
 
         button.className = "chapter-button";
 
-        button.textContent =
-            numberToHebrew(i);
+        button.textContent = numberToHebrew(i);
 
         button.onclick = function () {
+
+            readingSource = "chapters";
 
             openChapter(i);
 
@@ -183,10 +162,108 @@ function createDayChapterButtons() {
 
 
 // ==========================================
-// פתיחת מסך לפי יום
+// יצירת פרקי היום
 // ==========================================
 
-window.showDays = function () {
+function createDayChapterButtons(dayNumber) {
+
+    const container =
+        document.getElementById("day-chapters");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const dayData =
+        weeklyChapters[dayNumber];
+
+    for (
+        let i = dayData.chapters[0];
+        i <= dayData.chapters[1];
+        i++
+    ) {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "chapter-button";
+
+        button.textContent =
+            numberToHebrew(i);
+
+        button.onclick = function () {
+
+            readingSource = "day";
+
+            currentDayNumber = dayNumber;
+
+            currentDayStart =
+                dayData.chapters[0];
+
+            currentDayEnd =
+                dayData.chapters[1];
+
+            openChapter(i);
+
+        };
+
+        container.appendChild(button);
+    }
+}
+
+
+// ==========================================
+// יצירת כפתורי ימים נוספים
+// ==========================================
+
+function createOtherDaysButtons(currentDay) {
+
+    const container =
+        document.getElementById("other-days");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    for (let day = 0; day <= 6; day++) {
+
+        if (day === currentDay) {
+            continue;
+        }
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "day-button";
+
+        button.textContent =
+            dayNames[day];
+
+        button.onclick = function () {
+
+            showSpecificDay(day);
+
+        };
+
+        container.appendChild(button);
+    }
+}
+
+
+// ==========================================
+// הצגת יום מסוים
+// ==========================================
+
+function showSpecificDay(dayNumber) {
+
+    const dayData =
+        weeklyChapters[dayNumber];
 
     document
         .getElementById("home-screen")
@@ -204,21 +281,32 @@ window.showDays = function () {
         .getElementById("days-screen")
         .classList.remove("hidden");
 
+    document
+        .getElementById("today-title")
+        .textContent =
+        dayData.name;
+
+    document
+        .getElementById("today-description")
+        .textContent =
+        "פרקי " + dayData.name;
+
+    createDayChapterButtons(dayNumber);
+
+    createOtherDaysButtons(dayNumber);
+}
+
+
+// ==========================================
+// פתיחת "לפי יום"
+// ==========================================
+
+window.showDays = function () {
 
     const today =
         new Date().getDay();
 
-    const dayData =
-        weeklyChapters[today];
-
-
-    document
-        .getElementById("today-title")
-        .textContent =
-        "היום " + dayData.name;
-
-
-    createDayChapterButtons();
+    showSpecificDay(today);
 };
 
 
@@ -243,11 +331,15 @@ window.showHome = function () {
     document
         .getElementById("reading-screen")
         .classList.add("hidden");
+
+    document
+        .getElementById("finish-screen")
+        .classList.add("hidden");
 };
 
 
 // ==========================================
-// מסך לפי פרק
+// פתיחת מסך הפרקים
 // ==========================================
 
 window.showChapters = function () {
@@ -265,13 +357,35 @@ window.showChapters = function () {
         .classList.add("hidden");
 
     document
+        .getElementById("finish-screen")
+        .classList.add("hidden");
+
+    document
         .getElementById("chapters-screen")
         .classList.remove("hidden");
 };
 
 
 // ==========================================
-// מסך קריאה
+// חזרה למסך שממנו הגענו
+// ==========================================
+
+function backFromReading() {
+
+    if (readingSource === "day") {
+
+        showDays();
+
+    } else {
+
+        showChapters();
+
+    }
+}
+
+
+// ==========================================
+// פתיחת מסך הקריאה
 // ==========================================
 
 function showReadingScreen() {
@@ -286,6 +400,10 @@ function showReadingScreen() {
 
     document
         .getElementById("days-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("finish-screen")
         .classList.add("hidden");
 
     document
@@ -307,6 +425,9 @@ window.openChapter = async function (chapterNumber) {
     const title =
         document.getElementById("reading-title");
 
+    const dayTitle =
+        document.getElementById("reading-day-title");
+
     const textContainer =
         document.getElementById("reading-text");
 
@@ -316,10 +437,32 @@ window.openChapter = async function (chapterNumber) {
     const error =
         document.getElementById("reading-error");
 
+    const finishButton =
+        document.getElementById("finish-button");
+
+    const nextButton =
+        document.getElementById("next-button");
+
 
     title.textContent =
         "תהילים " +
         numberToHebrew(chapterNumber);
+
+
+    if (readingSource === "day") {
+
+        const dayName =
+            dayNames[currentDayNumber];
+
+        dayTitle.textContent =
+            "תהילים ל" +
+            dayName;
+
+    } else {
+
+        dayTitle.textContent = "";
+
+    }
 
 
     textContainer.innerHTML = "";
@@ -327,6 +470,23 @@ window.openChapter = async function (chapterNumber) {
     error.classList.add("hidden");
 
     loading.classList.remove("hidden");
+
+    finishButton.classList.add("hidden");
+
+    nextButton.classList.remove("hidden");
+
+
+    // אם זה הפרק האחרון של היום
+    if (
+        readingSource === "day" &&
+        chapterNumber === currentDayEnd
+    ) {
+
+        finishButton.classList.remove("hidden");
+
+        nextButton.classList.add("hidden");
+
+    }
 
 
     try {
@@ -372,7 +532,6 @@ window.openChapter = async function (chapterNumber) {
 
         loading.classList.add("hidden");
 
-
         displayVerses(verses);
 
 
@@ -392,7 +551,7 @@ window.openChapter = async function (chapterNumber) {
 
 
 // ==========================================
-// הצגת פסוקים
+// הצגת הפסוקים
 // ==========================================
 
 function displayVerses(verses) {
@@ -408,10 +567,8 @@ function displayVerses(verses) {
         const verseElement =
             document.createElement("div");
 
-
         verseElement.className =
             "verse";
-
 
         verseElement.innerHTML =
             '<span class="verse-number">' +
@@ -421,11 +578,9 @@ function displayVerses(verses) {
             verse +
             '</span>';
 
-
         container.appendChild(verseElement);
 
     });
-
 }
 
 
@@ -440,7 +595,6 @@ window.retryCurrentChapter = function () {
         openChapter(currentChapter);
 
     }
-
 };
 
 
@@ -468,6 +622,45 @@ window.nextChapter = function () {
     if (currentChapter < 150) {
 
         openChapter(currentChapter + 1);
+
+    }
+
+};
+
+
+// ==========================================
+// סיום פרקי היום
+// ==========================================
+
+window.finishDay = function () {
+
+    document
+        .getElementById("reading-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("finish-screen")
+        .classList.remove("hidden");
+
+};
+
+
+// ==========================================
+// המשך לפרק שאחרי פרקי היום
+// ==========================================
+
+window.continueAfterDay = function () {
+
+    const nextChapterNumber =
+        currentDayEnd + 1;
+
+
+    readingSource = "chapters";
+
+
+    if (nextChapterNumber <= 150) {
+
+        openChapter(nextChapterNumber);
 
     }
 
