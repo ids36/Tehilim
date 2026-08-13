@@ -278,6 +278,10 @@ function showSpecificDay(dayNumber) {
         .classList.add("hidden");
 
     document
+        .getElementById("finish-screen")
+        .classList.add("hidden");
+
+    document
         .getElementById("days-screen")
         .classList.remove("hidden");
 
@@ -367,7 +371,7 @@ window.showChapters = function () {
 
 
 // ==========================================
-// חזרה למסך שממנו הגענו
+// חזרה מהקריאה
 // ==========================================
 
 function backFromReading() {
@@ -440,6 +444,9 @@ window.openChapter = async function (chapterNumber) {
     const finishButton =
         document.getElementById("finish-button");
 
+    const previousButton =
+        document.getElementById("previous-button");
+
     const nextButton =
         document.getElementById("next-button");
 
@@ -471,12 +478,32 @@ window.openChapter = async function (chapterNumber) {
 
     loading.classList.remove("hidden");
 
+
     finishButton.classList.add("hidden");
+
+    previousButton.classList.remove("hidden");
 
     nextButton.classList.remove("hidden");
 
 
+    // ==========================================
+    // אם זה הפרק הראשון של היום
+    // ==========================================
+
+    if (
+        readingSource === "day" &&
+        chapterNumber === currentDayStart
+    ) {
+
+        previousButton.classList.add("hidden");
+
+    }
+
+
+    // ==========================================
     // אם זה הפרק האחרון של היום
+    // ==========================================
+
     if (
         readingSource === "day" &&
         chapterNumber === currentDayEnd
@@ -551,7 +578,7 @@ window.openChapter = async function (chapterNumber) {
 
 
 // ==========================================
-// הצגת הפסוקים
+// הצגת הפסוקים + הסרת {פ}
 // ==========================================
 
 function displayVerses(verses) {
@@ -570,6 +597,15 @@ function displayVerses(verses) {
         verseElement.className =
             "verse";
 
+
+        // הסרת סימוני פ מכל מקום בטקסט
+        verse =
+            verse
+                .replace(/\{פ\}/g, "")
+                .replace(/פ(?=\s*$)/g, "")
+                .trim();
+
+
         verseElement.innerHTML =
             '<span class="verse-number">' +
             (index + 1) +
@@ -577,6 +613,7 @@ function displayVerses(verses) {
             '<span>' +
             verse +
             '</span>';
+
 
         container.appendChild(verseElement);
 
@@ -646,7 +683,7 @@ window.finishDay = function () {
 
 
 // ==========================================
-// המשך לפרק שאחרי פרקי היום
+// המשך לפרק שאחרי היום
 // ==========================================
 
 window.continueAfterDay = function () {
