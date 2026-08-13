@@ -3,11 +3,214 @@
 // ==========================================
 
 let currentChapter = null;
+
 let readingSource = "chapters";
 
 let currentDayNumber = null;
 let currentDayStart = null;
 let currentDayEnd = null;
+
+
+// ==========================================
+// מועדפים
+// ==========================================
+
+// שליפת המועדפים מהדפדפן
+function getFavorites() {
+
+    try {
+
+        const saved =
+            localStorage.getItem("tehillimFavorites");
+
+        if (!saved) {
+            return [];
+        }
+
+        const favorites =
+            JSON.parse(saved);
+
+        if (!Array.isArray(favorites)) {
+            return [];
+        }
+
+        return favorites
+            .map(Number)
+            .filter(function (number) {
+
+                return (
+                    Number.isInteger(number) &&
+                    number >= 1 &&
+                    number <= 150
+                );
+
+            });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return [];
+
+    }
+}
+
+
+// ==========================================
+// שמירת המועדפים
+// ==========================================
+
+function saveFavorites(favorites) {
+
+    try {
+
+        localStorage.setItem(
+            "tehillimFavorites",
+            JSON.stringify(favorites)
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+}
+
+
+// ==========================================
+// בדיקה אם פרק במועדפים
+// ==========================================
+
+function isFavorite(chapterNumber) {
+
+    const favorites =
+        getFavorites();
+
+    return favorites.includes(chapterNumber);
+}
+
+
+// ==========================================
+// הוספה למועדפים
+// ==========================================
+
+function addFavorite(chapterNumber) {
+
+    let favorites =
+        getFavorites();
+
+    if (!favorites.includes(chapterNumber)) {
+
+        favorites.push(chapterNumber);
+
+    }
+
+    // תמיד למיין לפי מספר הפרק
+    favorites.sort(function (a, b) {
+
+        return a - b;
+
+    });
+
+    saveFavorites(favorites);
+
+}
+
+
+// ==========================================
+// הסרה מהמועדפים
+// ==========================================
+
+function removeFavorite(chapterNumber) {
+
+    let favorites =
+        getFavorites();
+
+    favorites =
+        favorites.filter(function (number) {
+
+            return number !== chapterNumber;
+
+        });
+
+    saveFavorites(favorites);
+
+}
+
+
+// ==========================================
+// לחיצה על הלב
+// ==========================================
+
+window.toggleFavorite = function () {
+
+    if (currentChapter === null) {
+        return;
+    }
+
+
+    if (isFavorite(currentChapter)) {
+
+        removeFavorite(currentChapter);
+
+    } else {
+
+        addFavorite(currentChapter);
+
+    }
+
+
+    updateFavoriteButton();
+
+};
+
+
+// ==========================================
+// עדכון הלב במסך
+// ==========================================
+
+function updateFavoriteButton() {
+
+    const button =
+        document.getElementById("favorite-button");
+
+    if (!button) {
+        return;
+    }
+
+
+    if (
+        currentChapter !== null &&
+        isFavorite(currentChapter)
+    ) {
+
+        button.textContent = "♥";
+
+        button.classList.add(
+            "favorite-active"
+        );
+
+        button.setAttribute(
+            "aria-label",
+            "הסרה מהמועדפים"
+        );
+
+    } else {
+
+        button.textContent = "♡";
+
+        button.classList.remove(
+            "favorite-active"
+        );
+
+        button.setAttribute(
+            "aria-label",
+            "הוספה למועדפים"
+        );
+
+    }
+
+}
 
 
 // ==========================================
@@ -46,24 +249,39 @@ function numberToHebrew(number) {
     for (const [value, letter] of values) {
 
         while (number >= value) {
+
             result += letter;
+
             number -= value;
+
         }
+
     }
+
 
     if (result === "יה") {
         result = "טו";
     }
 
+
     if (result === "יו") {
         result = "טז";
     }
 
+
     if (result.length === 1) {
+
         return result + "׳";
+
     }
 
-    return result.slice(0, -1) + "״" + result.slice(-1);
+
+    return (
+        result.slice(0, -1) +
+        "״" +
+        result.slice(-1)
+    );
+
 }
 
 
@@ -72,6 +290,7 @@ function numberToHebrew(number) {
 // ==========================================
 
 const dayNames = [
+
     "יום ראשון",
     "יום שני",
     "יום שלישי",
@@ -79,6 +298,7 @@ const dayNames = [
     "יום חמישי",
     "יום שישי",
     "שבת"
+
 ];
 
 
@@ -132,21 +352,28 @@ const weeklyChapters = {
 
 function createChapterButtons() {
 
-    const container = document.getElementById("chapters");
+    const container =
+        document.getElementById("chapters");
 
     if (!container) {
         return;
     }
 
+
     container.innerHTML = "";
+
 
     for (let i = 1; i <= 150; i++) {
 
-        const button = document.createElement("button");
+        const button =
+            document.createElement("button");
 
-        button.className = "chapter-button";
+        button.className =
+            "chapter-button";
 
-        button.textContent = numberToHebrew(i);
+        button.textContent =
+            numberToHebrew(i);
+
 
         button.onclick = function () {
 
@@ -156,8 +383,11 @@ function createChapterButtons() {
 
         };
 
+
         container.appendChild(button);
+
     }
+
 }
 
 
@@ -174,10 +404,13 @@ function createDayChapterButtons(dayNumber) {
         return;
     }
 
+
     container.innerHTML = "";
+
 
     const dayData =
         weeklyChapters[dayNumber];
+
 
     for (
         let i = dayData.chapters[0];
@@ -194,11 +427,13 @@ function createDayChapterButtons(dayNumber) {
         button.textContent =
             numberToHebrew(i);
 
+
         button.onclick = function () {
 
             readingSource = "day";
 
-            currentDayNumber = dayNumber;
+            currentDayNumber =
+                dayNumber;
 
             currentDayStart =
                 dayData.chapters[0];
@@ -210,8 +445,11 @@ function createDayChapterButtons(dayNumber) {
 
         };
 
+
         container.appendChild(button);
+
     }
+
 }
 
 
@@ -228,13 +466,16 @@ function createOtherDaysButtons(currentDay) {
         return;
     }
 
+
     container.innerHTML = "";
+
 
     for (let day = 0; day <= 6; day++) {
 
         if (day === currentDay) {
             continue;
         }
+
 
         const button =
             document.createElement("button");
@@ -245,14 +486,18 @@ function createOtherDaysButtons(currentDay) {
         button.textContent =
             dayNames[day];
 
+
         button.onclick = function () {
 
             showSpecificDay(day);
 
         };
 
+
         container.appendChild(button);
+
     }
+
 }
 
 
@@ -265,39 +510,53 @@ function showSpecificDay(dayNumber) {
     const dayData =
         weeklyChapters[dayNumber];
 
+
     document
         .getElementById("home-screen")
         .classList.add("hidden");
+
 
     document
         .getElementById("chapters-screen")
         .classList.add("hidden");
 
+
+    document
+        .getElementById("favorites-screen")
+        .classList.add("hidden");
+
+
     document
         .getElementById("reading-screen")
         .classList.add("hidden");
+
 
     document
         .getElementById("finish-screen")
         .classList.add("hidden");
 
+
     document
         .getElementById("days-screen")
         .classList.remove("hidden");
+
 
     document
         .getElementById("today-title")
         .textContent =
         dayData.name;
 
+
     document
         .getElementById("today-description")
         .textContent =
         "פרקי " + dayData.name;
 
+
     createDayChapterButtons(dayNumber);
 
     createOtherDaysButtons(dayNumber);
+
 }
 
 
@@ -311,7 +570,131 @@ window.showDays = function () {
         new Date().getDay();
 
     showSpecificDay(today);
+
 };
+
+
+// ==========================================
+// הצגת מועדפים
+// ==========================================
+
+window.showFavorites = function () {
+
+    document
+        .getElementById("home-screen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("chapters-screen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("days-screen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("reading-screen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("finish-screen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("favorites-screen")
+        .classList.remove("hidden");
+
+
+    createFavoriteButtons();
+
+};
+
+
+// ==========================================
+// יצירת כפתורי המועדפים
+// ==========================================
+
+function createFavoriteButtons() {
+
+    const container =
+        document.getElementById("favorites");
+
+    const emptyMessage =
+        document.getElementById("favorites-empty");
+
+
+    if (!container || !emptyMessage) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    let favorites =
+        getFavorites();
+
+
+    // תמיד לפי סדר הפרקים
+    favorites.sort(function (a, b) {
+
+        return a - b;
+
+    });
+
+
+    saveFavorites(favorites);
+
+
+    if (favorites.length === 0) {
+
+        emptyMessage.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+
+    emptyMessage.classList.add(
+        "hidden"
+    );
+
+
+    favorites.forEach(function (chapterNumber) {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "chapter-button";
+
+
+        button.textContent =
+            "פרק " +
+            numberToHebrew(chapterNumber);
+
+
+        button.onclick = function () {
+
+            readingSource = "favorites";
+
+            openChapter(chapterNumber);
+
+        };
+
+
+        container.appendChild(button);
+
+    });
+
+}
 
 
 // ==========================================
@@ -324,21 +707,31 @@ window.showHome = function () {
         .getElementById("home-screen")
         .classList.remove("hidden");
 
+
     document
         .getElementById("chapters-screen")
         .classList.add("hidden");
+
 
     document
         .getElementById("days-screen")
         .classList.add("hidden");
 
+
+    document
+        .getElementById("favorites-screen")
+        .classList.add("hidden");
+
+
     document
         .getElementById("reading-screen")
         .classList.add("hidden");
 
+
     document
         .getElementById("finish-screen")
         .classList.add("hidden");
+
 };
 
 
@@ -352,21 +745,31 @@ window.showChapters = function () {
         .getElementById("home-screen")
         .classList.add("hidden");
 
+
     document
         .getElementById("days-screen")
         .classList.add("hidden");
+
+
+    document
+        .getElementById("favorites-screen")
+        .classList.add("hidden");
+
 
     document
         .getElementById("reading-screen")
         .classList.add("hidden");
 
+
     document
         .getElementById("finish-screen")
         .classList.add("hidden");
 
+
     document
         .getElementById("chapters-screen")
         .classList.remove("hidden");
+
 };
 
 
@@ -380,11 +783,16 @@ function backFromReading() {
 
         showDays();
 
+    } else if (readingSource === "favorites") {
+
+        showFavorites();
+
     } else {
 
         showChapters();
 
     }
+
 }
 
 
@@ -398,21 +806,31 @@ function showReadingScreen() {
         .getElementById("home-screen")
         .classList.add("hidden");
 
+
     document
         .getElementById("chapters-screen")
         .classList.add("hidden");
+
 
     document
         .getElementById("days-screen")
         .classList.add("hidden");
 
+
+    document
+        .getElementById("favorites-screen")
+        .classList.add("hidden");
+
+
     document
         .getElementById("finish-screen")
         .classList.add("hidden");
 
+
     document
         .getElementById("reading-screen")
         .classList.remove("hidden");
+
 }
 
 
@@ -422,33 +840,59 @@ function showReadingScreen() {
 
 window.openChapter = async function (chapterNumber) {
 
-    currentChapter = chapterNumber;
+    currentChapter =
+        chapterNumber;
+
 
     showReadingScreen();
 
+
     const title =
-        document.getElementById("reading-title");
+        document.getElementById(
+            "reading-title"
+        );
+
 
     const dayTitle =
-        document.getElementById("reading-day-title");
+        document.getElementById(
+            "reading-day-title"
+        );
+
 
     const textContainer =
-        document.getElementById("reading-text");
+        document.getElementById(
+            "reading-text"
+        );
+
 
     const loading =
-        document.getElementById("reading-loading");
+        document.getElementById(
+            "reading-loading"
+        );
+
 
     const error =
-        document.getElementById("reading-error");
+        document.getElementById(
+            "reading-error"
+        );
+
 
     const finishButton =
-        document.getElementById("finish-button");
+        document.getElementById(
+            "finish-button"
+        );
+
 
     const previousButton =
-        document.getElementById("previous-button");
+        document.getElementById(
+            "previous-button"
+        );
+
 
     const nextButton =
-        document.getElementById("next-button");
+        document.getElementById(
+            "next-button"
+        );
 
 
     title.textContent =
@@ -456,10 +900,15 @@ window.openChapter = async function (chapterNumber) {
         numberToHebrew(chapterNumber);
 
 
+    // ==========================================
+    // כותרת לפי יום
+    // ==========================================
+
     if (readingSource === "day") {
 
         const dayName =
             dayNames[currentDayNumber];
+
 
         dayTitle.textContent =
             "תהילים ל" +
@@ -474,20 +923,41 @@ window.openChapter = async function (chapterNumber) {
 
     textContainer.innerHTML = "";
 
-    error.classList.add("hidden");
 
-    loading.classList.remove("hidden");
+    error.classList.add(
+        "hidden"
+    );
 
 
-    finishButton.classList.add("hidden");
+    loading.classList.remove(
+        "hidden"
+    );
 
-    previousButton.classList.remove("hidden");
 
-    nextButton.classList.remove("hidden");
+    finishButton.classList.add(
+        "hidden"
+    );
+
+
+    previousButton.classList.remove(
+        "hidden"
+    );
+
+
+    nextButton.classList.remove(
+        "hidden"
+    );
 
 
     // ==========================================
-    // אם זה הפרק הראשון של היום
+    // עדכון הלב
+    // ==========================================
+
+    updateFavoriteButton();
+
+
+    // ==========================================
+    // הפרק הראשון של היום
     // ==========================================
 
     if (
@@ -495,13 +965,15 @@ window.openChapter = async function (chapterNumber) {
         chapterNumber === currentDayStart
     ) {
 
-        previousButton.classList.add("hidden");
+        previousButton.classList.add(
+            "hidden"
+        );
 
     }
 
 
     // ==========================================
-    // אם זה הפרק האחרון של היום
+    // הפרק האחרון של היום
     // ==========================================
 
     if (
@@ -509,9 +981,13 @@ window.openChapter = async function (chapterNumber) {
         chapterNumber === currentDayEnd
     ) {
 
-        finishButton.classList.remove("hidden");
+        finishButton.classList.remove(
+            "hidden"
+        );
 
-        nextButton.classList.add("hidden");
+        nextButton.classList.add(
+            "hidden"
+        );
 
     }
 
@@ -529,7 +1005,11 @@ window.openChapter = async function (chapterNumber) {
 
 
         if (!response.ok) {
-            throw new Error("Sefaria error");
+
+            throw new Error(
+                "Sefaria error"
+            );
+
         }
 
 
@@ -541,7 +1021,11 @@ window.openChapter = async function (chapterNumber) {
             !data.versions ||
             data.versions.length === 0
         ) {
-            throw new Error("No text");
+
+            throw new Error(
+                "No text"
+            );
+
         }
 
 
@@ -553,11 +1037,18 @@ window.openChapter = async function (chapterNumber) {
             !verses ||
             verses.length === 0
         ) {
-            throw new Error("Empty text");
+
+            throw new Error(
+                "Empty text"
+            );
+
         }
 
 
-        loading.classList.add("hidden");
+        loading.classList.add(
+            "hidden"
+        );
+
 
         displayVerses(verses);
 
@@ -566,11 +1057,18 @@ window.openChapter = async function (chapterNumber) {
 
         console.error(err);
 
-        loading.classList.add("hidden");
+
+        loading.classList.add(
+            "hidden"
+        );
+
 
         textContainer.innerHTML = "";
 
-        error.classList.remove("hidden");
+
+        error.classList.remove(
+            "hidden"
+        );
 
     }
 
@@ -584,7 +1082,10 @@ window.openChapter = async function (chapterNumber) {
 function displayVerses(verses) {
 
     const container =
-        document.getElementById("reading-text");
+        document.getElementById(
+            "reading-text"
+        );
+
 
     container.innerHTML = "";
 
@@ -594,11 +1095,12 @@ function displayVerses(verses) {
         const verseElement =
             document.createElement("div");
 
+
         verseElement.className =
             "verse";
 
 
-        // הסרת סימוני פ מכל מקום בטקסט
+        // הסרת סימוני פ
         verse =
             verse
                 .replace(/\{פ\}/g, "")
@@ -615,9 +1117,12 @@ function displayVerses(verses) {
             '</span>';
 
 
-        container.appendChild(verseElement);
+        container.appendChild(
+            verseElement
+        );
 
     });
+
 }
 
 
@@ -629,9 +1134,12 @@ window.retryCurrentChapter = function () {
 
     if (currentChapter !== null) {
 
-        openChapter(currentChapter);
+        openChapter(
+            currentChapter
+        );
 
     }
+
 };
 
 
@@ -643,7 +1151,9 @@ window.previousChapter = function () {
 
     if (currentChapter > 1) {
 
-        openChapter(currentChapter - 1);
+        openChapter(
+            currentChapter - 1
+        );
 
     }
 
@@ -658,7 +1168,9 @@ window.nextChapter = function () {
 
     if (currentChapter < 150) {
 
-        openChapter(currentChapter + 1);
+        openChapter(
+            currentChapter + 1
+        );
 
     }
 
@@ -674,6 +1186,7 @@ window.finishDay = function () {
     document
         .getElementById("reading-screen")
         .classList.add("hidden");
+
 
     document
         .getElementById("finish-screen")
@@ -692,12 +1205,15 @@ window.continueAfterDay = function () {
         currentDayEnd + 1;
 
 
-    readingSource = "chapters";
+    readingSource =
+        "chapters";
 
 
     if (nextChapterNumber <= 150) {
 
-        openChapter(nextChapterNumber);
+        openChapter(
+            nextChapterNumber
+        );
 
     }
 
