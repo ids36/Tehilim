@@ -1,24 +1,100 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>תהילים</title>
+
     <link rel="apple-touch-icon" href="IMG_7996.jpeg">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin: 10px 0 35px;
+        }
+
+        .menu-button {
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-size: 18px;
+            text-align: right;
+            cursor: pointer;
+        }
+
+        .menu-button:active {
+            transform: scale(0.98);
+        }
+
+        .emoji {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>📖 תהילים</h1>
+    <div class="container">
 
-    <p>ברוכים הבאים לאפליקציית תהילים</p>
+        <div class="icon">📖</div>
 
-    <button>לפי פרק</button>
+        <h1>תהילים</h1>
 
-    <button>לפי יום</button>
+        <div class="subtitle">
+            לקריאת תהילים בכל עת
+        </div>
 
-    <button>לפי נושא</button>
+        <button class="menu-button">
+            <span class="emoji">📖</span>
+            לפי פרק
+        </button>
+
+        <button class="menu-button">
+            <span class="emoji">📅</span>
+            לפי יום
+        </button>
+
+        <button class="menu-button">
+            <span class="emoji">🎯</span>
+            לפי נושא
+        </button>
+
+    </div>
 
 </body>
+
 </html>
