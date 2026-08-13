@@ -28,7 +28,7 @@
             font-family: Arial, sans-serif;
             background: #f7f7f7;
             color: #222;
-            transition: background 0.2s ease, color 0.2s ease;
+            transition: background 0.2s, color 0.2s;
         }
 
         .container {
@@ -64,16 +64,16 @@
 
 
         /* ==========================================
-           פעולות עליונות במסך הבית
+           כפתורי עליון במסך הבית
         ========================================== */
 
-        .home-top-actions {
+        .home-top-buttons {
             position: relative;
-            height: 45px;
-            margin-bottom: 5px;
+            height: 48px;
+            margin-bottom: 0;
         }
 
-        .home-action-button {
+        .home-top-button {
             position: absolute;
             top: 0;
 
@@ -91,17 +91,17 @@
             align-items: center;
             justify-content: center;
 
-            cursor: pointer;
+            padding: 0;
 
+            font-size: 22px;
             color: #444;
 
-            transition:
-                transform 0.15s ease,
-                background 0.2s ease;
-        }
+            cursor: pointer;
 
-        .home-action-button:active {
-            transform: scale(0.92);
+            appearance: none;
+            -webkit-appearance: none;
+
+            outline: none;
         }
 
         .home-search-button {
@@ -112,14 +112,15 @@
             right: 0;
         }
 
-        .home-action-button svg {
-            width: 22px;
-            height: 22px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .home-top-button:active {
+            transform: scale(0.94);
+        }
+
+        .home-top-button svg {
+            width: 21px;
+            height: 21px;
+            display: block;
+            pointer-events: none;
         }
 
 
@@ -138,6 +139,7 @@
             font-size: 18px;
             text-align: right;
             cursor: pointer;
+            color: #222;
         }
 
         .menu-button:active {
@@ -166,6 +168,7 @@
             box-shadow: 0 2px 7px rgba(0,0,0,0.08);
             font-size: 16px;
             cursor: pointer;
+            color: #222;
         }
 
 
@@ -188,6 +191,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             font-size: 17px;
             cursor: pointer;
+            color: #222;
         }
 
         .chapter-button:active {
@@ -253,6 +257,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             font-size: 17px;
             cursor: pointer;
+            color: #222;
         }
 
         .day-button:active {
@@ -282,6 +287,7 @@
             text-align: right;
             padding: 15px 18px;
             cursor: pointer;
+            color: #222;
         }
 
         .prayer-button:active {
@@ -332,6 +338,7 @@
             font-size: 15px;
             cursor: pointer;
             box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            color: #222;
         }
 
 
@@ -437,6 +444,7 @@
             box-shadow: 0 2px 7px rgba(0,0,0,0.08);
             font-size: 16px;
             cursor: pointer;
+            color: #222;
         }
 
 
@@ -461,6 +469,7 @@
             padding: 13px 10px;
             font-size: 16px;
             cursor: pointer;
+            color: #222;
         }
 
         .navigation-button:active {
@@ -498,6 +507,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             font-size: 17px;
             cursor: pointer;
+            color: #222;
         }
 
         .finish-button:active {
@@ -523,81 +533,78 @@
         ========================================== */
 
         .search-box {
-            display: flex;
-            gap: 8px;
             margin-top: 10px;
-            margin-bottom: 20px;
         }
 
         .search-input {
-            flex: 1;
-            min-width: 0;
-            padding: 14px 15px;
+            width: 100%;
+            padding: 15px 16px;
             border: 1px solid #ddd;
             border-radius: 11px;
             background: white;
             color: #222;
             font-size: 18px;
             outline: none;
-            direction: rtl;
+            text-align: right;
         }
 
         .search-input:focus {
             border-color: #aaa;
         }
 
-        .search-submit {
+        .search-button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 14px;
             border: none;
-            border-radius: 11px;
-            padding: 0 18px;
-            background: white;
-            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            background: #222;
+            color: #fff !important;
             font-size: 17px;
             cursor: pointer;
         }
 
-        .search-submit:active {
-            transform: scale(0.97);
+        .search-button:active {
+            transform: scale(0.98);
         }
 
         .search-results {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            margin-top: 20px;
         }
 
         .search-result {
             width: 100%;
+            margin-bottom: 12px;
+            padding: 15px;
             border: none;
             border-radius: 11px;
             background: white;
             box-shadow: 0 2px 7px rgba(0,0,0,0.08);
-            padding: 15px;
             text-align: right;
             cursor: pointer;
+            color: #222;
         }
 
-        .search-result:active {
-            transform: scale(0.99);
-        }
-
-        .search-result-reference {
-            font-size: 17px;
+        .search-result-title {
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
         }
 
         .search-result-text {
-            font-size: 18px;
+            font-size: 17px;
             line-height: 1.7;
-            color: #444;
+            color: #555;
+        }
+
+        .search-highlight {
+            font-weight: bold;
         }
 
         .search-status {
             text-align: center;
-            color: #777;
-            margin-top: 30px;
-            font-size: 17px;
+            margin-top: 25px;
+            color: #666;
             line-height: 1.6;
         }
 
@@ -606,88 +613,62 @@
            הגדרות
         ========================================== */
 
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
         .settings-section {
             background: white;
             border-radius: 12px;
             padding: 18px;
-            margin-bottom: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .settings-title {
+        .settings-section-title {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 15px;
         }
 
-        .settings-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 9px 0;
+        }
+
+        .settings-label {
+            font-size: 17px;
+        }
+
+        .settings-buttons {
+            display: flex;
             gap: 8px;
         }
 
         .settings-option {
             border: none;
             border-radius: 9px;
-            background: #f7f7f7;
-            padding: 12px 8px;
-            font-size: 16px;
+            padding: 9px 13px;
+            background: #f0f0f0;
+            color: #222;
+            font-size: 15px;
             cursor: pointer;
         }
 
         .settings-option.active {
-            box-shadow: inset 0 0 0 2px #555;
+            background: #222;
+            color: white;
         }
 
-        .settings-option:active {
-            transform: scale(0.97);
-        }
-
-        .settings-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            font-size: 17px;
-        }
-
-        .settings-info {
+        .about-text {
             color: #666;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-top: 8px;
-        }
-
-        .about-button {
-            width: 100%;
-            border: none;
-            border-radius: 10px;
-            background: #f7f7f7;
-            padding: 14px;
-            font-size: 17px;
-            text-align: right;
-            cursor: pointer;
-        }
-
-
-        /* ==========================================
-           אודות
-        ========================================== */
-
-        .about-box {
-            background: white;
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            text-align: right;
-            line-height: 1.8;
-            font-size: 17px;
-        }
-
-        .about-box h2 {
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-size: 22px;
+            line-height: 1.7;
+            font-size: 16px;
         }
 
 
@@ -696,60 +677,61 @@
         ========================================== */
 
         body.dark-mode {
-            background: #151515;
-            color: #eee;
+            background: #181818;
+            color: #f1f1f1;
         }
 
         body.dark-mode .subtitle,
         body.dark-mode .reading-day-title,
-        body.dark-mode .loading,
+        body.dark-mode .today-box p,
         body.dark-mode .favorites-empty,
+        body.dark-mode .loading,
+        body.dark-mode .memorial-text,
         body.dark-mode .search-status,
-        body.dark-mode .settings-info,
-        body.dark-mode .memorial-text {
+        body.dark-mode .about-text {
             color: #aaa;
         }
 
         body.dark-mode .menu-button,
         body.dark-mode .back-button,
         body.dark-mode .chapter-button,
+        body.dark-mode .today-box,
         body.dark-mode .day-button,
         body.dark-mode .prayer-button,
         body.dark-mode .reading-back,
         body.dark-mode .favorite-button,
         body.dark-mode .navigation-button,
         body.dark-mode .finish-button,
-        body.dark-mode .today-box,
-        body.dark-mode .search-input,
-        body.dark-mode .search-submit,
         body.dark-mode .search-result,
         body.dark-mode .settings-section,
-        body.dark-mode .about-box,
-        body.dark-mode .home-action-button {
-            background: #222;
-            color: #eee;
-        }
-
-        body.dark-mode .search-result-text {
-            color: #ccc;
+        body.dark-mode .home-top-button {
+            background: #242424;
+            color: #f1f1f1;
         }
 
         body.dark-mode .search-input {
+            background: #242424;
+            color: #f1f1f1;
             border-color: #444;
         }
 
-        body.dark-mode .settings-option,
-        body.dark-mode .about-button {
-            background: #2d2d2d;
-            color: #eee;
+        body.dark-mode .search-result-text {
+            color: #bbb;
+        }
+
+        body.dark-mode .settings-option {
+            background: #333;
+            color: #f1f1f1;
         }
 
         body.dark-mode .settings-option.active {
-            box-shadow: inset 0 0 0 2px #aaa;
+            background: #f1f1f1;
+            color: #222;
         }
 
-        body.dark-mode .verse-number {
-            color: #aaa;
+        body.dark-mode .search-button {
+            background: #f1f1f1;
+            color: #222 !important;
         }
 
     </style>
@@ -768,16 +750,21 @@
 
     <div id="home-screen">
 
-        <div class="home-top-actions">
+        <div class="home-top-buttons">
 
             <button
-                class="home-action-button home-search-button"
+                class="home-top-button home-search-button"
                 onclick="showSearch()"
                 aria-label="חיפוש"
             >
 
                 <svg
                     viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     aria-hidden="true"
                 >
                     <circle
@@ -792,20 +779,24 @@
                         x2="21"
                         y2="21"
                     ></line>
-
                 </svg>
 
             </button>
 
 
             <button
-                class="home-action-button home-settings-button"
+                class="home-top-button home-settings-button"
                 onclick="showSettings()"
                 aria-label="הגדרות"
             >
 
                 <svg
                     viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     aria-hidden="true"
                 >
                     <circle
@@ -815,7 +806,7 @@
                     ></circle>
 
                     <path
-                        d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.4 1.4-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2h-2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L9 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7.7v-2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L9 9l1.4-1.4.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.2h2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 9l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2h-.2a1.7 1.7 0 0 0-1.5 1z"
+                        d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2A1.7 1.7 0 0 0 8.46 10a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15z"
                     ></path>
                 </svg>
 
@@ -828,9 +819,11 @@
             &nbsp;
         </div>
 
+
         <h1>
             תהילים
         </h1>
+
 
         <div class="subtitle">
             לקריאה בכל מקום ובכל עת
@@ -863,8 +856,6 @@
         </button>
 
 
-        <!-- תפילות לפני מועדפים -->
-
         <button
             class="menu-button"
             onclick="showPrayers()"
@@ -874,8 +865,6 @@
         </button>
 
 
-        <!-- מועדפים מתחת לתפילות -->
-
         <button
             class="menu-button"
             onclick="showFavorites()"
@@ -884,10 +873,6 @@
             <span class="emoji">❤️</span>
         </button>
 
-
-        <!-- ==========================================
-             הקדשה
-        ========================================== -->
 
         <div class="memorial-text">
             לעילוי נשמת לירן שמשון בן אליהו ומלכה
@@ -919,37 +904,35 @@
 
 
         <div class="subtitle">
-            חפש מילה או פסוק בספר תהילים
+            חפש מילה או פסוק מתוך ספר תהילים
         </div>
 
 
-        <form
-            id="search-form"
-            class="search-box"
-        >
+        <div class="search-box">
 
             <input
                 id="search-input"
                 class="search-input"
-                type="search"
-                placeholder="לדוגמה: פחד, רפואה, לב..."
+                type="text"
+                placeholder="לדוגמה: פחד, לב, ישועה..."
                 autocomplete="off"
-                enterkeyhint="search"
+                onkeydown="handleSearchKeydown(event)"
             >
 
+
             <button
-                class="search-submit"
-                type="submit"
+                class="search-button"
+                onclick="performSearch()"
             >
                 חפש
             </button>
 
-        </form>
+        </div>
 
 
         <div
             id="search-status"
-            class="search-status"
+            class="search-status hidden"
         ></div>
 
 
@@ -988,141 +971,113 @@
         </div>
 
 
-        <div class="settings-section">
+        <div class="settings-list">
 
-            <div class="settings-title">
-                גודל המלל
-            </div>
+            <div class="settings-section">
 
-
-            <div class="settings-options">
-
-                <button
-                    id="font-small"
-                    class="settings-option"
-                    onclick="setFontSize('small')"
-                >
-                    קטן
-                </button>
+                <div class="settings-section-title">
+                    גודל המלל
+                </div>
 
 
-                <button
-                    id="font-medium"
-                    class="settings-option"
-                    onclick="setFontSize('medium')"
-                >
-                    רגיל
-                </button>
+                <div class="settings-row">
+
+                    <div class="settings-label">
+                        טקסט תהילים
+                    </div>
 
 
-                <button
-                    id="font-large"
-                    class="settings-option"
-                    onclick="setFontSize('large')"
-                >
-                    גדול
-                </button>
+                    <div class="settings-buttons">
 
-            </div>
-
-        </div>
+                        <button
+                            id="font-small"
+                            class="settings-option"
+                            onclick="setTextSize('small')"
+                        >
+                            קטן
+                        </button>
 
 
-        <div class="settings-section">
-
-            <div class="settings-title">
-                מראה
-            </div>
-
-
-            <div class="settings-options">
-
-                <button
-                    id="theme-light"
-                    class="settings-option"
-                    onclick="setTheme('light')"
-                >
-                    בהיר
-                </button>
+                        <button
+                            id="font-medium"
+                            class="settings-option"
+                            onclick="setTextSize('medium')"
+                        >
+                            רגיל
+                        </button>
 
 
-                <button
-                    id="theme-dark"
-                    class="settings-option"
-                    onclick="setTheme('dark')"
-                >
-                    כהה
-                </button>
+                        <button
+                            id="font-large"
+                            class="settings-option"
+                            onclick="setTextSize('large')"
+                        >
+                            גדול
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+
+            <div class="settings-section">
+
+                <div class="settings-section-title">
+                    מראה
+                </div>
 
 
-        <div class="settings-section">
+                <div class="settings-row">
 
-            <div class="settings-title">
-                אודות
+                    <div class="settings-label">
+                        מצב תצוגה
+                    </div>
+
+
+                    <div class="settings-buttons">
+
+                        <button
+                            id="theme-light"
+                            class="settings-option"
+                            onclick="setTheme('light')"
+                        >
+                            בהיר
+                        </button>
+
+
+                        <button
+                            id="theme-dark"
+                            class="settings-option"
+                            onclick="setTheme('dark')"
+                        >
+                            כהה
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
 
 
-            <button
-                class="about-button"
-                onclick="showAbout()"
-            >
-                אודות על האפליקציה
-            </button>
+            <div class="settings-section">
 
-        </div>
-
-    </div>
+                <div class="settings-section-title">
+                    אודות
+                </div>
 
 
-    <!-- ==========================================
-         אודות
-    ========================================== -->
+                <div class="about-text">
+                    אפליקציית תהילים לקריאה נוחה בכל מקום ובכל עת.
+                    <br><br>
+                    האפליקציה נועדה להנגיש את ספר תהילים ואת התפילות בצורה פשוטה, נקייה ונוחה.
+                    <br><br>
+                    לעילוי נשמת לירן שמשון בן אליהו ומלכה
+                </div>
 
-    <div
-        id="about-screen"
-        class="hidden"
-    >
-
-        <button
-            class="back-button"
-            onclick="showSettings()"
-        >
-            → חזרה
-        </button>
-
-
-        <h1>
-            אודות
-        </h1>
-
-
-        <div class="subtitle">
-            תהילים
-        </div>
-
-
-        <div class="about-box">
-
-            <h2>
-                תהילים
-            </h2>
-
-            <p>
-                אפליקציה לקריאת ספר תהילים, לפי פרק ולפי יום,
-                עם אפשרות לשמור פרקים למועדפים ולחפש בתוך ספר תהילים.
-            </p>
-
-            <p>
-                הטקסטים באפליקציה נטענים ממאגר Sefaria.
-            </p>
-
-            <p>
-                לעילוי נשמת לירן שמשון בן אליהו ומלכה
-            </p>
+            </div>
 
         </div>
 
