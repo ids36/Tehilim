@@ -16,316 +16,6 @@ let currentPrayer = null;
 
 
 // ==========================================
-// הגדרות
-// ==========================================
-
-const SETTINGS_FONT_KEY =
-    "tehillimFontSize";
-
-const SETTINGS_THEME_KEY =
-    "tehillimTheme";
-
-
-function getSavedFontSize() {
-
-    try {
-
-        const saved =
-            localStorage.getItem(
-                SETTINGS_FONT_KEY
-            );
-
-        if (
-            saved === "small" ||
-            saved === "large"
-        ) {
-
-            return saved;
-
-        }
-
-        return "medium";
-
-    } catch (error) {
-
-        return "medium";
-
-    }
-
-}
-
-
-function getSavedTheme() {
-
-    try {
-
-        const saved =
-            localStorage.getItem(
-                SETTINGS_THEME_KEY
-            );
-
-        if (saved === "dark") {
-
-            return "dark";
-
-        }
-
-        return "light";
-
-    } catch (error) {
-
-        return "light";
-
-    }
-
-}
-
-
-function applyFontSize() {
-
-    const size =
-        getSavedFontSize();
-
-    document.body.style.fontSize =
-        size === "small"
-            ? "90%"
-            : size === "large"
-                ? "110%"
-                : "100%";
-
-
-    const readingText =
-        document.getElementById(
-            "reading-text"
-        );
-
-    if (readingText) {
-
-        if (size === "small") {
-
-            readingText.style.fontSize =
-                "18px";
-
-        } else if (size === "large") {
-
-            readingText.style.fontSize =
-                "23px";
-
-        } else {
-
-            readingText.style.fontSize =
-                "20px";
-
-        }
-
-    }
-
-
-    const prayerText =
-        document.getElementById(
-            "prayer-text"
-        );
-
-    if (prayerText) {
-
-        if (size === "small") {
-
-            prayerText.style.fontSize =
-                "18px";
-
-        } else if (size === "large") {
-
-            prayerText.style.fontSize =
-                "23px";
-
-        } else {
-
-            prayerText.style.fontSize =
-                "20px";
-
-        }
-
-    }
-
-}
-
-
-function applyTheme() {
-
-    const theme =
-        getSavedTheme();
-
-    if (theme === "dark") {
-
-        document.body.classList.add(
-            "dark-mode"
-        );
-
-    } else {
-
-        document.body.classList.remove(
-            "dark-mode"
-        );
-
-    }
-
-}
-
-
-window.setFontSize =
-    function (size) {
-
-        if (
-            size !== "small" &&
-            size !== "medium" &&
-            size !== "large"
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            localStorage.setItem(
-                SETTINGS_FONT_KEY,
-                size
-            );
-
-        } catch (error) {
-
-            console.error(error);
-
-        }
-
-
-        applyFontSize();
-
-        updateSettingsButtons();
-
-    };
-
-
-window.setTheme =
-    function (theme) {
-
-        if (
-            theme !== "light" &&
-            theme !== "dark"
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            localStorage.setItem(
-                SETTINGS_THEME_KEY,
-                theme
-            );
-
-        } catch (error) {
-
-            console.error(error);
-
-        }
-
-
-        applyTheme();
-
-        updateSettingsButtons();
-
-    };
-
-
-function updateSettingsButtons() {
-
-    const fontSize =
-        getSavedFontSize();
-
-    const theme =
-        getSavedTheme();
-
-
-    const fontButtons = {
-
-        small:
-            document.getElementById(
-                "font-small"
-            ),
-
-        medium:
-            document.getElementById(
-                "font-medium"
-            ),
-
-        large:
-            document.getElementById(
-                "font-large"
-            )
-
-    };
-
-
-    Object.keys(fontButtons).forEach(
-        function (key) {
-
-            const button =
-                fontButtons[key];
-
-            if (!button) {
-                return;
-            }
-
-            button.classList.toggle(
-                "active",
-                key === fontSize
-            );
-
-        }
-    );
-
-
-    const themeButtons = {
-
-        light:
-            document.getElementById(
-                "theme-light"
-            ),
-
-        dark:
-            document.getElementById(
-                "theme-dark"
-            )
-
-    };
-
-
-    Object.keys(themeButtons).forEach(
-        function (key) {
-
-            const button =
-                themeButtons[key];
-
-            if (!button) {
-                return;
-            }
-
-            button.classList.toggle(
-                "active",
-                key === theme
-            );
-
-        }
-    );
-
-}
-
-
-// ==========================================
 // מועדפים
 // ==========================================
 
@@ -974,810 +664,6 @@ function createFavoriteButtons() {
 
 
 // ==========================================
-// חיפוש בתהילים
-// ==========================================
-
-let currentSearchQuery = "";
-
-
-window.showSearch =
-    function () {
-
-        hideAllScreens();
-
-        document
-            .getElementById("search-screen")
-            .classList.remove("hidden");
-
-
-        const input =
-            document.getElementById(
-                "search-input"
-            );
-
-        const status =
-            document.getElementById(
-                "search-status"
-            );
-
-        const results =
-            document.getElementById(
-                "search-results"
-            );
-
-
-        if (status) {
-            status.textContent = "";
-        }
-
-        if (results) {
-            results.innerHTML = "";
-        }
-
-
-        if (input) {
-
-            input.value =
-                currentSearchQuery;
-
-            setTimeout(
-                function () {
-
-                    input.focus();
-
-                },
-                50
-            );
-
-        }
-
-    };
-
-
-async function searchPsalms(query) {
-
-    const url =
-        "https://www.sefaria.org/api/search-wrapper";
-
-
-    const body = {
-
-        type: "text",
-
-        query: query,
-
-        field: "naive_lemmatizer",
-
-        slop: 10,
-
-        size: 50,
-
-        filters: [
-            "Tanakh/Psalms"
-        ],
-
-        filter_fields: [
-            "path"
-        ],
-
-        sort_method: "score",
-
-        sort_fields: [
-            "pagesheetrank"
-        ],
-
-        source_proj: [
-            "ref",
-            "exact",
-            "lang",
-            "path"
-        ]
-
-    };
-
-
-    let response =
-        await fetch(
-            url,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify(body)
-            }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Search API error"
-        );
-
-    }
-
-
-    let data =
-        await response.json();
-
-
-    let hits =
-        data &&
-        data.hits &&
-        Array.isArray(data.hits.hits)
-            ? data.hits.hits
-            : [];
-
-
-    /*
-       אם המבנה המדויק של נתיב הספר
-       משתנה ב-Sefaria, ננסה חיפוש
-       נוסף לפי Psalms.
-    */
-
-    if (hits.length === 0) {
-
-        const fallbackBody = {
-
-            type: "text",
-
-            query: query,
-
-            field: "naive_lemmatizer",
-
-            slop: 10,
-
-            size: 50,
-
-            filters: [
-                "Psalms"
-            ],
-
-            filter_fields: [
-                "path"
-            ],
-
-            sort_method: "score",
-
-            sort_fields: [
-                "pagesheetrank"
-            ],
-
-            source_proj: [
-                "ref",
-                "exact",
-                "lang",
-                "path"
-            ]
-
-        };
-
-
-        response =
-            await fetch(
-                url,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(
-                            fallbackBody
-                        )
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Search fallback error"
-            );
-
-        }
-
-
-        data =
-            await response.json();
-
-
-        hits =
-            data &&
-            data.hits &&
-            Array.isArray(data.hits.hits)
-                ? data.hits.hits
-                : [];
-
-    }
-
-
-    return hits;
-
-}
-
-
-function extractSearchHitSource(hit) {
-
-    if (!hit) {
-        return {};
-    }
-
-
-    if (
-        hit._source &&
-        typeof hit._source === "object"
-    ) {
-
-        return hit._source;
-
-    }
-
-
-    if (
-        hit.source &&
-        typeof hit.source === "object"
-    ) {
-
-        return hit.source;
-
-    }
-
-
-    return hit;
-
-}
-
-
-function getSearchReference(source) {
-
-    if (!source) {
-        return "";
-    }
-
-
-    return (
-        source.ref ||
-        source.reference ||
-        ""
-    );
-
-}
-
-
-function getSearchText(source, hit) {
-
-    if (source) {
-
-        if (
-            typeof source.exact === "string"
-        ) {
-
-            return source.exact;
-
-        }
-
-        if (
-            typeof source.text === "string"
-        ) {
-
-            return source.text;
-
-        }
-
-    }
-
-
-    if (
-        hit &&
-        typeof hit.highlight === "object"
-    ) {
-
-        const highlight =
-            hit.highlight;
-
-
-        const possibleFields = [
-
-            "exact",
-
-            "naive_lemmatizer"
-
-        ];
-
-
-        for (
-            let i = 0;
-            i < possibleFields.length;
-            i++
-        ) {
-
-            const field =
-                possibleFields[i];
-
-
-            if (
-                Array.isArray(
-                    highlight[field]
-                ) &&
-                highlight[field].length > 0
-            ) {
-
-                return highlight[field][0];
-
-            }
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-function extractPsalmNumber(ref) {
-
-    if (!ref) {
-        return null;
-    }
-
-
-    const match =
-        ref.match(
-            /Psalms\s+(\d+)/i
-        );
-
-
-    if (!match) {
-        return null;
-    }
-
-
-    const number =
-        Number(match[1]);
-
-
-    if (
-        !Number.isInteger(number) ||
-        number < 1 ||
-        number > 150
-    ) {
-
-        return null;
-
-    }
-
-
-    return number;
-
-}
-
-
-function extractVerseNumber(ref) {
-
-    if (!ref) {
-        return null;
-    }
-
-
-    const match =
-        ref.match(
-            /Psalms\s+\d+:(\d+)/i
-        );
-
-
-    if (!match) {
-        return null;
-    }
-
-
-    const number =
-        Number(match[1]);
-
-
-    if (!Number.isInteger(number)) {
-        return null;
-    }
-
-
-    return number;
-
-}
-
-
-function cleanSearchText(text) {
-
-    if (
-        typeof text !== "string"
-    ) {
-
-        return "";
-
-    }
-
-
-    return text
-        .replace(
-            /<[^>]*>/g,
-            ""
-        )
-        .replace(
-            /\{פ\}/g,
-            ""
-        )
-        .replace(
-            /\{ס\}/g,
-            ""
-        )
-        .replace(
-            /\s+/g,
-            " "
-        )
-        .trim();
-
-}
-
-
-function displaySearchResults(hits) {
-
-    const container =
-        document.getElementById(
-            "search-results"
-        );
-
-    const status =
-        document.getElementById(
-            "search-status"
-        );
-
-
-    if (!container || !status) {
-        return;
-    }
-
-
-    container.innerHTML = "";
-
-
-    const results = [];
-
-
-    hits.forEach(
-        function (hit) {
-
-            const source =
-                extractSearchHitSource(
-                    hit
-                );
-
-
-            const ref =
-                getSearchReference(
-                    source
-                );
-
-
-            const chapterNumber =
-                extractPsalmNumber(
-                    ref
-                );
-
-
-            if (!chapterNumber) {
-                return;
-            }
-
-
-            const verseNumber =
-                extractVerseNumber(
-                    ref
-                );
-
-
-            const text =
-                cleanSearchText(
-                    getSearchText(
-                        source,
-                        hit
-                    )
-                );
-
-
-            if (!text) {
-                return;
-            }
-
-
-            results.push({
-
-                ref: ref,
-
-                chapter:
-                    chapterNumber,
-
-                verse:
-                    verseNumber,
-
-                text:
-                    text
-
-            });
-
-        }
-    );
-
-
-    const uniqueResults = [];
-
-
-    results.forEach(
-        function (result) {
-
-            const key =
-                result.ref +
-                "|" +
-                result.text;
-
-
-            const exists =
-                uniqueResults.some(
-                    function (item) {
-
-                        return (
-                            item.ref +
-                            "|" +
-                            item.text
-                        ) === key;
-
-                    }
-                );
-
-
-            if (!exists) {
-
-                uniqueResults.push(
-                    result
-                );
-
-            }
-
-        }
-    );
-
-
-    if (
-        uniqueResults.length === 0
-    ) {
-
-        status.textContent =
-            "לא נמצאו תוצאות מתאימות.";
-
-        return;
-
-    }
-
-
-    status.textContent =
-        "נמצאו " +
-        uniqueResults.length +
-        " תוצאות";
-
-
-    uniqueResults.forEach(
-        function (result) {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.className =
-                "search-result";
-
-
-            const reference =
-                document.createElement(
-                    "div"
-                );
-
-
-            reference.className =
-                "search-result-reference";
-
-
-            let referenceText =
-                "תהילים " +
-                numberToHebrew(
-                    result.chapter
-                );
-
-
-            if (
-                result.verse !== null
-            ) {
-
-                referenceText +=
-                    ":" +
-                    result.verse;
-
-            }
-
-
-            reference.textContent =
-                referenceText;
-
-
-            const text =
-                document.createElement(
-                    "div"
-                );
-
-
-            text.className =
-                "search-result-text";
-
-
-            text.textContent =
-                result.text;
-
-
-            button.appendChild(
-                reference
-            );
-
-
-            button.appendChild(
-                text
-            );
-
-
-            button.onclick =
-                function () {
-
-                    readingSource =
-                        "search";
-
-                    openChapter(
-                        result.chapter
-                    );
-
-                };
-
-
-            container.appendChild(
-                button
-            );
-
-        }
-    );
-
-}
-
-
-async function performSearch() {
-
-    const input =
-        document.getElementById(
-            "search-input"
-        );
-
-    const status =
-        document.getElementById(
-            "search-status"
-        );
-
-    const results =
-        document.getElementById(
-            "search-results"
-        );
-
-
-    if (!input || !status || !results) {
-        return;
-    }
-
-
-    const query =
-        input.value
-            .trim();
-
-
-    if (!query) {
-
-        status.textContent =
-            "כתוב מילה או פסוק לחיפוש.";
-
-        results.innerHTML = "";
-
-        return;
-
-    }
-
-
-    currentSearchQuery =
-        query;
-
-
-    results.innerHTML = "";
-
-
-    status.textContent =
-        "מחפש בתהילים...";
-
-
-    try {
-
-        const hits =
-            await searchPsalms(
-                query
-            );
-
-
-        displaySearchResults(
-            hits
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Search error:",
-            error
-        );
-
-
-        status.textContent =
-            "קרתה תקלה בחיפוש. נסה/י שוב.";
-
-        results.innerHTML = "";
-
-    }
-
-}
-
-
-// ==========================================
-// הגדרות
-// ==========================================
-
-window.showSettings =
-    function () {
-
-        hideAllScreens();
-
-        document
-            .getElementById("settings-screen")
-            .classList.remove("hidden");
-
-        updateSettingsButtons();
-
-    };
-
-
-window.showAbout =
-    function () {
-
-        hideAllScreens();
-
-        document
-            .getElementById("about-screen")
-            .classList.remove("hidden");
-
-    };
-
-
-// ==========================================
 // תפילות
 // ==========================================
 
@@ -1798,7 +684,6 @@ const prayers = [
         ]
 
     },
-
 
     {
         id: "shacharit",
@@ -1846,7 +731,6 @@ const prayers = [
 
     },
 
-
     {
         id: "mincha",
         name: "מנחה",
@@ -1864,7 +748,6 @@ const prayers = [
         ]
 
     },
-
 
     {
         id: "arvit",
@@ -1884,7 +767,6 @@ const prayers = [
 
     },
 
-
     {
         id: "blessings-enjoyments",
         name: "ברכות הנהנין",
@@ -1896,7 +778,6 @@ const prayers = [
         ]
 
     },
-
 
     {
         id: "birkat-hamazon",
@@ -1910,7 +791,6 @@ const prayers = [
 
     },
 
-
     {
         id: "al-hamichya",
         name: "מעין שלוש",
@@ -1922,7 +802,6 @@ const prayers = [
         ]
 
     },
-
 
     {
         id: "borei-nefashot",
@@ -1936,7 +815,6 @@ const prayers = [
 
     },
 
-
     {
         id: "bedtime-shema",
         name: "קריאת שמע שעל המיטה",
@@ -1949,7 +827,6 @@ const prayers = [
 
     },
 
-
     {
         id: "havdalah",
         name: "הבדלה",
@@ -1961,7 +838,6 @@ const prayers = [
         ]
 
     },
-
 
     {
         id: "selichot",
@@ -2056,6 +932,113 @@ function buildSefariaUrl(ref) {
         encodeURIComponent(ref) +
         "?version=hebrew&return_format=text_only"
     );
+
+}
+
+
+// ==========================================
+// ניקוי טקסט תהילים
+// ==========================================
+
+function cleanPsalmsText(text) {
+
+    if (
+        text === null ||
+        text === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    let result =
+        String(text);
+
+
+    // ישויות HTML נפוצות
+    result =
+        result
+            .replace(
+                /&thinsp;/gi,
+                " "
+            )
+            .replace(
+                /&nbsp;/gi,
+                " "
+            )
+            .replace(
+                /&ensp;/gi,
+                " "
+            )
+            .replace(
+                /&emsp;/gi,
+                " "
+            )
+            .replace(
+                /&amp;/gi,
+                "&"
+            )
+            .replace(
+                /&#160;/gi,
+                " "
+            )
+            .replace(
+                /&#8239;/gi,
+                " "
+            );
+
+
+    // תגיות HTML אם הגיעו מהשרת
+    result =
+        result.replace(
+            /<[^>]*>/g,
+            " "
+        );
+
+
+    // סימנים טכניים מיותרים
+    result =
+        result
+            .replace(
+                /\{פ\}/g,
+                ""
+            )
+            .replace(
+                /\{ס\}/g,
+                ""
+            );
+
+
+    // קווים אנכיים טכניים שהגיעו כחלק מהפורמט
+    result =
+        result.replace(
+            /\s*[׀|]+\s*/g,
+            " "
+        );
+
+
+    // הסרת שאריות לטיניות/אנגליות.
+    // משאיר מספרים רק אם הם חלק מטקסט חיצוני,
+    // אך בפסוקים עצמם אין בהם צורך.
+    result =
+        result.replace(
+            /[A-Za-z]+/g,
+            " "
+        );
+
+
+    // ניקוי רווחים
+    result =
+        result
+            .replace(
+                /\s+/g,
+                " "
+            )
+            .trim();
+
+
+    return result;
 
 }
 
@@ -2211,6 +1194,7 @@ function filterBoreiNefashot(parts) {
                         " "
                     )
                     .trim();
+
 
             if (
                 normalized.includes(
@@ -2587,9 +1571,6 @@ function displayPrayerText(text) {
         }
     );
 
-
-    applyFontSize();
-
 }
 
 
@@ -2660,6 +1641,983 @@ window.showChapters =
 
 
 // ==========================================
+// חיפוש
+// ==========================================
+
+let psalmsSearchCache = null;
+
+let psalmsSearchLoading = false;
+
+let psalmsSearchPromise = null;
+
+
+// ==========================================
+// פתיחת מסך חיפוש
+// ==========================================
+
+window.showSearch = function () {
+
+    hideAllScreens();
+
+    document
+        .getElementById("search-screen")
+        .classList.remove("hidden");
+
+    const input =
+        document.getElementById(
+            "search-input"
+        );
+
+    if (input) {
+
+        setTimeout(
+            function () {
+
+                input.focus();
+
+            },
+            100
+        );
+
+    }
+
+};
+
+
+// ==========================================
+// Enter בחיפוש
+// ==========================================
+
+window.handleSearchKeydown =
+    function (event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            performSearch();
+
+        }
+
+    };
+
+
+// ==========================================
+// טעינת כל פרקי תהילים לחיפוש
+// ==========================================
+
+async function loadPsalmsForSearch() {
+
+    if (psalmsSearchCache) {
+
+        return psalmsSearchCache;
+
+    }
+
+
+    if (psalmsSearchPromise) {
+
+        return psalmsSearchPromise;
+
+    }
+
+
+    psalmsSearchLoading = true;
+
+
+    const status =
+        document.getElementById(
+            "search-status"
+        );
+
+
+    if (status) {
+
+        status.textContent =
+            "טוען את ספר תהילים לחיפוש...";
+
+        status.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    psalmsSearchPromise =
+        (async function () {
+
+            const results = [];
+
+
+            // טעינה בקבוצות כדי לא להעמיס
+            const batchSize = 10;
+
+
+            for (
+                let start = 1;
+                start <= 150;
+                start += batchSize
+            ) {
+
+                const promises = [];
+
+
+                for (
+                    let chapter = start;
+                    chapter < start + batchSize &&
+                    chapter <= 150;
+                    chapter++
+                ) {
+
+                    promises.push(
+                        fetchPsalmsChapterForSearch(
+                            chapter
+                        )
+                    );
+
+                }
+
+
+                const batch =
+                    await Promise.all(
+                        promises
+                    );
+
+
+                batch.forEach(
+                    function (chapterData) {
+
+                        if (chapterData) {
+
+                            results.push(
+                                chapterData
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                if (status) {
+
+                    const loaded =
+                        Math.min(
+                            start + batchSize - 1,
+                            150
+                        );
+
+                    status.textContent =
+                        "טוען את ספר תהילים לחיפוש... " +
+                        loaded +
+                        " מתוך 150";
+
+                }
+
+            }
+
+
+            psalmsSearchCache =
+                results.sort(
+                    function (a, b) {
+
+                        return (
+                            a.chapter -
+                            b.chapter
+                        );
+
+                    }
+                );
+
+
+            psalmsSearchLoading = false;
+
+            psalmsSearchPromise = null;
+
+
+            return psalmsSearchCache;
+
+        })();
+
+
+    try {
+
+        return await psalmsSearchPromise;
+
+    } catch (error) {
+
+        psalmsSearchLoading = false;
+
+        psalmsSearchPromise = null;
+
+        throw error;
+
+    }
+
+}
+
+
+// ==========================================
+// טעינת פרק לחיפוש
+// ==========================================
+
+async function fetchPsalmsChapterForSearch(
+    chapterNumber
+) {
+
+    try {
+
+        const url =
+            "https://www.sefaria.org/api/v3/texts/Psalms%20" +
+            chapterNumber +
+            "?version=hebrew&return_format=text_only";
+
+
+        const response =
+            await fetch(url);
+
+
+        if (!response.ok) {
+
+            return null;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.versions ||
+            data.versions.length === 0
+        ) {
+
+            return null;
+
+        }
+
+
+        const verses =
+            data.versions[0].text;
+
+
+        const verseList = [];
+
+
+        function collectVerses(value) {
+
+            if (Array.isArray(value)) {
+
+                value.forEach(
+                    function (item) {
+
+                        collectVerses(
+                            item
+                        );
+
+                    }
+                );
+
+            } else if (
+                typeof value === "string"
+            ) {
+
+                const cleaned =
+                    cleanPsalmsText(
+                        value
+                    );
+
+                if (cleaned) {
+
+                    verseList.push(
+                        cleaned
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        collectVerses(
+            verses
+        );
+
+
+        if (
+            verseList.length === 0
+        ) {
+
+            return null;
+
+        }
+
+
+        return {
+
+            chapter:
+                chapterNumber,
+
+            verses:
+                verseList
+
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Search chapter error:",
+            chapterNumber,
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// ==========================================
+// נרמול חיפוש
+// ==========================================
+
+function normalizeSearchText(text) {
+
+    return String(text || "")
+        .normalize("NFKC")
+        .replace(
+            /[\u0591-\u05C7]/g,
+            ""
+        )
+        .replace(
+            /["'״׳.,!?;:()[\]{}]/g,
+            ""
+        )
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .trim()
+        .toLowerCase();
+
+}
+
+
+// ==========================================
+// ביצוע חיפוש
+// ==========================================
+
+window.performSearch =
+    async function () {
+
+        const input =
+            document.getElementById(
+                "search-input"
+            );
+
+
+        const resultsContainer =
+            document.getElementById(
+                "search-results"
+            );
+
+
+        const status =
+            document.getElementById(
+                "search-status"
+            );
+
+
+        if (
+            !input ||
+            !resultsContainer ||
+            !status
+        ) {
+
+            return;
+
+        }
+
+
+        const query =
+            input.value.trim();
+
+
+        resultsContainer.innerHTML =
+            "";
+
+
+        if (!query) {
+
+            status.textContent =
+                "הקלד מילה או פסוק לחיפוש.";
+
+            status.classList.remove(
+                "hidden"
+            );
+
+            return;
+
+        }
+
+
+        status.textContent =
+            "מחפש...";
+
+        status.classList.remove(
+            "hidden"
+        );
+
+
+        try {
+
+            const chapters =
+                await loadPsalmsForSearch();
+
+
+            const normalizedQuery =
+                normalizeSearchText(
+                    query
+                );
+
+
+            const results = [];
+
+
+            chapters.forEach(
+                function (chapterData) {
+
+                    chapterData.verses.forEach(
+                        function (
+                            verse,
+                            verseIndex
+                        ) {
+
+                            const normalizedVerse =
+                                normalizeSearchText(
+                                    verse
+                                );
+
+
+                            if (
+                                normalizedVerse.includes(
+                                    normalizedQuery
+                                )
+                            ) {
+
+                                results.push({
+
+                                    chapter:
+                                        chapterData.chapter,
+
+                                    verse:
+                                        verseIndex + 1,
+
+                                    text:
+                                        verse
+
+                                });
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+            displaySearchResults(
+                results,
+                query
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Search error:",
+                error
+            );
+
+
+            status.textContent =
+                "אירעה תקלה בטעינת החיפוש. נסה שוב.";
+
+        }
+
+    };
+
+
+// ==========================================
+// הצגת תוצאות חיפוש
+// ==========================================
+
+function displaySearchResults(
+    results,
+    query
+) {
+
+    const container =
+        document.getElementById(
+            "search-results"
+        );
+
+
+    const status =
+        document.getElementById(
+            "search-status"
+        );
+
+
+    if (!container || !status) {
+        return;
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    if (
+        results.length === 0
+    ) {
+
+        status.textContent =
+            "לא נמצאו תוצאות עבור \"" +
+            query +
+            "\".";
+
+        status.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+
+    // מגבלה סבירה להצגה
+    const visibleResults =
+        results.slice(0, 100);
+
+
+    status.textContent =
+        "נמצאו " +
+        results.length +
+        " תוצאות.";
+
+
+    status.classList.remove(
+        "hidden"
+    );
+
+
+    visibleResults.forEach(
+        function (result) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.className =
+                "search-result";
+
+
+            button.onclick =
+                function () {
+
+                    readingSource =
+                        "chapters";
+
+                    openChapter(
+                        result.chapter
+                    );
+
+                };
+
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+
+            title.className =
+                "search-result-title";
+
+
+            title.textContent =
+                "תהילים " +
+                numberToHebrew(
+                    result.chapter
+                ) +
+                " — פסוק " +
+                result.verse;
+
+
+            const text =
+                document.createElement(
+                    "div"
+                );
+
+
+            text.className =
+                "search-result-text";
+
+
+            text.textContent =
+                result.text;
+
+
+            button.appendChild(
+                title
+            );
+
+
+            button.appendChild(
+                text
+            );
+
+
+            container.appendChild(
+                button
+            );
+
+        }
+    );
+
+
+    if (
+        results.length > 100
+    ) {
+
+        const more =
+            document.createElement(
+                "div"
+            );
+
+
+        more.className =
+            "search-status";
+
+
+        more.textContent =
+            "מוצגות 100 התוצאות הראשונות.";
+
+        container.appendChild(
+            more
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// הגדרות
+// ==========================================
+
+window.showSettings =
+    function () {
+
+        hideAllScreens();
+
+        document
+            .getElementById(
+                "settings-screen"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+        updateSettingsUI();
+
+    };
+
+
+// ==========================================
+// שינוי גודל טקסט
+// ==========================================
+
+window.setTextSize =
+    function (size) {
+
+        let fontSize = 20;
+
+
+        if (size === "small") {
+
+            fontSize = 18;
+
+        } else if (
+            size === "large"
+        ) {
+
+            fontSize = 23;
+
+        }
+
+
+        document.documentElement.style
+            .setProperty(
+                "--reading-font-size",
+                fontSize + "px"
+            );
+
+
+        const readingText =
+            document.getElementById(
+                "reading-text"
+            );
+
+
+        const prayerText =
+            document.getElementById(
+                "prayer-text"
+            );
+
+
+        if (readingText) {
+
+            readingText.style.fontSize =
+                fontSize + "px";
+
+        }
+
+
+        if (prayerText) {
+
+            prayerText.style.fontSize =
+                fontSize + "px";
+
+        }
+
+
+        try {
+
+            localStorage.setItem(
+                "tehillimFontSize",
+                size
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+
+        updateSettingsUI();
+
+    };
+
+
+// ==========================================
+// שינוי מצב תצוגה
+// ==========================================
+
+window.setTheme =
+    function (theme) {
+
+        if (
+            theme === "dark"
+        ) {
+
+            document.body.classList.add(
+                "dark-mode"
+            );
+
+        } else {
+
+            document.body.classList.remove(
+                "dark-mode"
+            );
+
+        }
+
+
+        try {
+
+            localStorage.setItem(
+                "tehillimTheme",
+                theme
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+
+        updateSettingsUI();
+
+    };
+
+
+// ==========================================
+// עדכון ממשק הגדרות
+// ==========================================
+
+function updateSettingsUI() {
+
+    let savedSize = "medium";
+
+    let savedTheme = "light";
+
+
+    try {
+
+        savedSize =
+            localStorage.getItem(
+                "tehillimFontSize"
+            ) || "medium";
+
+
+        savedTheme =
+            localStorage.getItem(
+                "tehillimTheme"
+            ) || "light";
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+
+    const sizeButtons = {
+
+        small:
+            document.getElementById(
+                "font-small"
+            ),
+
+        medium:
+            document.getElementById(
+                "font-medium"
+            ),
+
+        large:
+            document.getElementById(
+                "font-large"
+            )
+
+    };
+
+
+    Object.keys(sizeButtons).forEach(
+        function (key) {
+
+            const button =
+                sizeButtons[key];
+
+            if (!button) {
+                return;
+            }
+
+            if (key === savedSize) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            } else {
+
+                button.classList.remove(
+                    "active"
+                );
+
+            }
+
+        }
+    );
+
+
+    const lightButton =
+        document.getElementById(
+            "theme-light"
+        );
+
+
+    const darkButton =
+        document.getElementById(
+            "theme-dark"
+        );
+
+
+    if (lightButton) {
+
+        lightButton.classList.toggle(
+            "active",
+            savedTheme === "light"
+        );
+
+    }
+
+
+    if (darkButton) {
+
+        darkButton.classList.toggle(
+            "active",
+            savedTheme === "dark"
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// טעינת הגדרות שמורות
+// ==========================================
+
+function loadSavedSettings() {
+
+    let savedSize = "medium";
+
+    let savedTheme = "light";
+
+
+    try {
+
+        savedSize =
+            localStorage.getItem(
+                "tehillimFontSize"
+            ) || "medium";
+
+
+        savedTheme =
+            localStorage.getItem(
+                "tehillimTheme"
+            ) || "light";
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+
+    setTextSize(
+        savedSize
+    );
+
+
+    setTheme(
+        savedTheme
+    );
+
+}
+
+
+// ==========================================
 // הסתרת כל המסכים
 // ==========================================
 
@@ -2672,8 +2630,6 @@ function hideAllScreens() {
         "search-screen",
 
         "settings-screen",
-
-        "about-screen",
 
         "chapters-screen",
 
@@ -2731,12 +2687,6 @@ function backFromReading() {
     ) {
 
         showFavorites();
-
-    } else if (
-        readingSource === "search"
-    ) {
-
-        showSearch();
 
     } else {
 
@@ -2886,8 +2836,6 @@ window.openChapter =
 
 
         updateFavoriteButton();
-
-        applyFontSize();
 
 
         if (
@@ -3069,16 +3017,9 @@ function displayVerses(verses) {
 
 
             verse =
-                verse
-                    .replace(
-                        /\{פ\}/g,
-                        ""
-                    )
-                    .replace(
-                        /פ(?=\s*$)/g,
-                        ""
-                    )
-                    .trim();
+                cleanPsalmsText(
+                    verse
+                );
 
 
             const numberElement =
@@ -3120,9 +3061,6 @@ function displayVerses(verses) {
 
         }
     );
-
-
-    applyFontSize();
 
 }
 
@@ -3198,18 +3136,14 @@ window.finishDay =
             .getElementById(
                 "reading-screen"
             )
-            .classList.add(
-                "hidden"
-            );
+            .classList.add("hidden");
 
 
         document
             .getElementById(
                 "finish-screen"
             )
-            .classList.remove(
-                "hidden"
-            );
+            .classList.remove("hidden");
 
     };
 
@@ -3254,33 +3188,7 @@ document.addEventListener(
 
         createPrayerButtons();
 
-        applyTheme();
-
-        applyFontSize();
-
-        updateSettingsButtons();
-
-
-        const searchForm =
-            document.getElementById(
-                "search-form"
-            );
-
-
-        if (searchForm) {
-
-            searchForm.addEventListener(
-                "submit",
-                function (event) {
-
-                    event.preventDefault();
-
-                    performSearch();
-
-                }
-            );
-
-        }
+        loadSavedSettings();
 
     }
 );
