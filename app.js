@@ -1,6 +1,5 @@
 // ==========================================
 // אפליקציית תהילים
-// יצירת 150 פרקי תהילים
 // ==========================================
 
 
@@ -44,7 +43,7 @@ function numberToHebrew(number) {
         }
     }
 
-    // טיפול מיוחד ב-15 וב-16
+    // 15 ו-16 נכתבים ט"ו וט"ז
     if (result === "יה") {
         result = "טו";
     }
@@ -53,7 +52,7 @@ function numberToHebrew(number) {
         result = "טז";
     }
 
-    // הוספת גרש / גרשיים
+    // גרש לאות אחת, גרשיים ליותר מאות אחת
     if (result.length === 1) {
         return result + "׳";
     }
@@ -63,7 +62,7 @@ function numberToHebrew(number) {
 
 
 // ------------------------------------------
-// יצירת כפתורי 150 הפרקים
+// יצירת 150 כפתורי הפרקים
 // ------------------------------------------
 
 function createChapterButtons() {
@@ -73,6 +72,8 @@ function createChapterButtons() {
     if (!container) {
         return;
     }
+
+    container.innerHTML = "";
 
     for (let i = 1; i <= 150; i++) {
 
@@ -94,22 +95,210 @@ function createChapterButtons() {
 
 
 // ------------------------------------------
-// פתיחת פרק
+// פתיחת פרק והבאת הטקסט מ-Sefaria
 // ------------------------------------------
 
-function openChapter(chapterNumber) {
+async function openChapter(chapterNumber) {
 
-    alert(
-        "בחרת את פרק " +
-        numberToHebrew(chapterNumber) +
-        "\n\nבשלב הבא נציג כאן את הטקסט של הפרק."
-    );
+    showReadingScreen();
+
+    const title = document.getElementById("reading-title");
+    const textContainer = document.getElementById("reading-text");
+    const errorContainer = document.getElementById("reading-error");
+    const loadingContainer = document.getElementById("reading-loading");
+
+    title.textContent = "תהילים " + numberToHebrew(chapterNumber);
+
+    textContainer.innerHTML = "";
+    errorContainer.classList.add("hidden");
+    loadingContainer.classList.remove("hidden");
+
+    try {
+
+        const url =
+            "https://www.sefaria.org/api/v3/texts/Psalms%20" +
+            chapterNumber +
+            "?version=hebrew&return_format=text_only";
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Sefaria request failed");
+        }
+
+        const data = await response.json();
+
+        if (!data.versions || data.versions.length === 0) {
+            throw new Error("No Hebrew version found");
+        }
+
+        const verses = data.versions[0].text;
+
+        if (!verses || verses.length === 0) {
+            throw new Error("No text found");
+        }
+
+        loadingContainer.classList.add("hidden");
+
+        displayVerses(verses);
+
+    } catch (error) {
+
+        console.error(error);
+
+        loadingContainer.classList.add("hidden");
+
+        textContainer.innerHTML = "";
+
+        errorContainer.classList.remove("hidden");
+
+    }
+}
+
+
+// ------------------------------------------
+// הצגת הפסוקים
+// ------------------------------------------
+
+function displayVerses(verses) {
+
+    const container = document.getElementById("reading-text");
+
+    container.innerHTML = "";
+
+    verses.forEach(function (verse, index) {
+
+        const verseElement = document.createElement("div");
+
+        verseElement.className = "verse";
+
+        verseElement.innerHTML =
+            '<span class="verse-number">' +
+            (index + 1) +
+            '</span>' +
+            '<span>' +
+            verse +
+            '</span>';
+
+        container.appendChild(verseElement);
+
+    });
+}
+
+
+// ------------------------------------------
+// ניסיון נוסף
+// ------------------------------------------
+
+function retryCurrentChapter() {
+
+    if (currentChapter !== null) {
+
+        openChapter(currentChapter);
+
+    }
+}
+
+
+// ------------------------------------------
+// משתנה ששומר את הפרק הנוכחי
+// ------------------------------------------
+
+let currentChapter = null;
+
+
+// ------------------------------------------
+// עטיפה כדי לזכור איזה פרק פתוח
+// ------------------------------------------
+
+const originalOpenChapter = openChapter;
+
+openChapter = async function(chapterNumber) {
+
+    currentChapter = chapterNumber;
+
+    await originalOpenChapter(chapterNumber);
+
+};
+
+
+// ------------------------------------------
+// מעבר למסך הפרקים
+// ------------------------------------------
+
+function showChapters() {
+
+    document.getElementById("home-screen").classList.add("hidden");
+
+    document.getElementById("reading-screen").classList.add("hidden");
+
+    document.getElementById("chapters-screen").classList.remove("hidden");
 
 }
 
 
 // ------------------------------------------
-// הפעלה
+// חזרה למסך הבית
+// ------------------------------------------
+
+function showHome() {
+
+    document.getElementById("chapters-screen").classList.add("hidden");
+
+    document.getElementById("reading-screen").classList.add("hidden");
+
+    document.getElementById("home-screen").classList.remove("hidden");
+
+}
+
+
+// ------------------------------------------
+// מעבר למסך הקריאה
+// ------------------------------------------
+
+function showReadingScreen() {
+
+    document.getElementById("home-screen").classList.add("hidden");
+
+    document.getElementById("chapters-screen").classList.add("hidden");
+
+    document.getElementById("reading-screen").classList.remove("hidden");
+
+}
+
+
+// ------------------------------------------
+// פרק קודם
+// ------------------------------------------
+
+function previousChapter() {
+
+    if (currentChapter > 1) {
+
+        openChapter(currentChapter - 1);
+
+    }
+
+}
+
+
+// ------------------------------------------
+// פרק הבא
+// ------------------------------------------
+
+function nextChapter() {
+
+    if (currentChapter < 150) {
+
+        openChapter(currentChapter + 1);
+
+    }
+
+}
+
+
+// ------------------------------------------
+// הפעלת האפליקציה
 // ------------------------------------------
 
 document.addEventListener("DOMContentLoaded", function () {
