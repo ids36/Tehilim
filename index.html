@@ -61,7 +61,9 @@
         }
 
 
-        /* כפתורי תפריט */
+        /* ==================================
+           כפתורי התפריט
+        ================================== */
 
         .menu-button {
             width: 100%;
@@ -85,7 +87,9 @@
         }
 
 
-        /* כפתור חזרה */
+        /* ==================================
+           כפתורי חזרה
+        ================================== */
 
         .back-button {
             display: block;
@@ -103,7 +107,9 @@
         }
 
 
-        /* פרקים */
+        /* ==================================
+           כפתורי פרקים
+        ================================== */
 
         .chapter-grid {
             display: grid;
@@ -127,11 +133,65 @@
         }
 
 
-        /* מסך קריאה */
+        /* ==================================
+           מסך לפי יום
+        ================================== */
+
+        .today-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .today-box h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .today-box p {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .other-days-title {
+            margin-top: 25px;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 21px;
+        }
+
+        .other-days {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .day-button {
+            min-height: 48px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .day-button:active {
+            transform: scale(0.97);
+        }
+
+
+        /* ==================================
+           מסך קריאה
+        ================================== */
 
         .reading-header {
             position: relative;
-            min-height: 55px;
+            min-height: 85px;
             margin-bottom: 15px;
         }
 
@@ -148,10 +208,17 @@
             box-shadow: 0 2px 7px rgba(0,0,0,0.08);
         }
 
-        .reading-title {
+        .reading-day-title {
+            text-align: center;
             padding-top: 8px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .reading-title {
             text-align: center;
             font-size: 28px;
+            margin: 5px 0 0;
         }
 
         .reading-text {
@@ -175,7 +242,9 @@
         }
 
 
-        /* טעינה */
+        /* ==================================
+           טעינה
+        ================================== */
 
         .loading {
             text-align: center;
@@ -185,7 +254,9 @@
         }
 
 
-        /* תקלה */
+        /* ==================================
+           תקלה
+        ================================== */
 
         .error-box {
             text-align: center;
@@ -206,7 +277,9 @@
         }
 
 
-        /* ניווט */
+        /* ==================================
+           ניווט בין פרקים
+        ================================== */
 
         .chapter-navigation {
             display: flex;
@@ -231,32 +304,41 @@
             transform: scale(0.98);
         }
 
-        .navigation-button:disabled {
-            opacity: 0.4;
-            cursor: default;
-        }
 
+        /* ==================================
+           מסך סיום
+        ================================== */
 
-        /* ימים */
-
-        .today-box {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+        .finish-screen {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .today-box h2 {
-            margin: 0 0 8px;
+        .finish-message {
             font-size: 24px;
+            line-height: 1.6;
+            margin-bottom: 35px;
         }
 
-        .today-box p {
-            margin: 0;
-            color: #666;
-            font-size: 16px;
+        .finish-button {
+            width: 100%;
+            max-width: 350px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: none;
+            border-radius: 11px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .finish-button:active {
+            transform: scale(0.98);
         }
 
     </style>
@@ -269,7 +351,9 @@
 <div class="container">
 
 
-    <!-- מסך הבית -->
+    <!-- ==================================
+         מסך ראשי
+    ================================== -->
 
     <div id="home-screen">
 
@@ -319,7 +403,9 @@
 
 
 
-    <!-- מסך לפי פרק -->
+    <!-- ==================================
+         מסך לפי פרק
+    ================================== -->
 
     <div
         id="chapters-screen"
@@ -353,7 +439,9 @@
 
 
 
-    <!-- מסך לפי יום -->
+    <!-- ==================================
+         מסך לפי יום
+    ================================== -->
 
     <div
         id="days-screen"
@@ -384,7 +472,7 @@
                 היום
             </h2>
 
-            <p>
+            <p id="today-description">
                 אלו הפרקים של היום
             </p>
 
@@ -396,11 +484,24 @@
             class="chapter-grid"
         ></div>
 
+
+        <h2 class="other-days-title">
+            לימים נוספים
+        </h2>
+
+
+        <div
+            id="other-days"
+            class="other-days"
+        ></div>
+
     </div>
 
 
 
-    <!-- מסך קריאה -->
+    <!-- ==================================
+         מסך קריאה
+    ================================== -->
 
     <div
         id="reading-screen"
@@ -411,10 +512,16 @@
 
             <button
                 class="reading-back"
-                onclick="showChapters()"
+                onclick="backFromReading()"
             >
-                → חזרה לפרקים
+                → חזרה
             </button>
+
+
+            <div
+                id="reading-day-title"
+                class="reading-day-title"
+            ></div>
 
 
             <h1
@@ -473,15 +580,64 @@
 
 
             <button
+                id="next-button"
                 class="navigation-button"
                 onclick="nextChapter()"
             >
                 ← פרק הבא
             </button>
 
+
+            <button
+                id="finish-button"
+                class="navigation-button hidden"
+                onclick="finishDay()"
+            >
+                סיום
+            </button>
+
         </div>
 
     </div>
+
+
+
+    <!-- ==================================
+         מסך סיום
+    ================================== -->
+
+    <div
+        id="finish-screen"
+        class="hidden"
+    >
+
+        <div class="finish-screen">
+
+            <div class="finish-message">
+                אשריך!<br>
+                סיימת את פרקי היום❤️
+            </div>
+
+
+            <button
+                class="finish-button"
+                onclick="showHome()"
+            >
+                חזרה למסך הראשי
+            </button>
+
+
+            <button
+                class="finish-button"
+                onclick="continueAfterDay()"
+            >
+                המשך לפרק הבא
+            </button>
+
+        </div>
+
+    </div>
+
 
 </div>
 
