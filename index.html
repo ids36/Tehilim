@@ -60,6 +60,11 @@
             display: none !important;
         }
 
+
+        /* ==========================================
+           כפתורי מסך ראשי
+        ========================================== */
+
         .menu-button {
             width: 100%;
             padding: 18px;
@@ -81,6 +86,11 @@
             margin-right: 10px;
         }
 
+
+        /* ==========================================
+           כפתור חזרה
+        ========================================== */
+
         .back-button {
             display: block;
             width: fit-content;
@@ -95,6 +105,11 @@
             font-size: 16px;
             cursor: pointer;
         }
+
+
+        /* ==========================================
+           כפתורי פרקים
+        ========================================== */
 
         .chapter-grid {
             display: grid;
@@ -116,6 +131,24 @@
         .chapter-button:active {
             transform: scale(0.95);
         }
+
+
+        /* ==========================================
+           מועדפים
+        ========================================== */
+
+        .favorites-empty {
+            text-align: center;
+            color: #777;
+            margin-top: 40px;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+
+        /* ==========================================
+           לפי יום
+        ========================================== */
 
         .today-box {
             background: white;
@@ -164,6 +197,11 @@
             transform: scale(0.97);
         }
 
+
+        /* ==========================================
+           מסך קריאת פרק
+        ========================================== */
+
         .reading-header {
             position: relative;
             min-height: 85px;
@@ -182,6 +220,43 @@
             cursor: pointer;
             box-shadow: 0 2px 7px rgba(0,0,0,0.08);
         }
+
+
+        /* ==========================================
+           לב מועדפים
+        ========================================== */
+
+        .favorite-button {
+            position: absolute;
+            left: 0;
+            top: 0;
+
+            width: 44px;
+            height: 44px;
+
+            border: none;
+            background: white;
+            border-radius: 50%;
+
+            box-shadow: 0 2px 7px rgba(0,0,0,0.08);
+
+            font-size: 28px;
+            line-height: 44px;
+
+            padding: 0;
+            cursor: pointer;
+
+            color: #555;
+        }
+
+        .favorite-button.favorite-active {
+            color: red;
+        }
+
+        .favorite-button:active {
+            transform: scale(0.92);
+        }
+
 
         .reading-day-title {
             text-align: center;
@@ -216,12 +291,22 @@
             vertical-align: top;
         }
 
+
+        /* ==========================================
+           טעינה
+        ========================================== */
+
         .loading {
             text-align: center;
             margin-top: 40px;
             color: #666;
             font-size: 17px;
         }
+
+
+        /* ==========================================
+           תקלה
+        ========================================== */
 
         .error-box {
             text-align: center;
@@ -240,6 +325,11 @@
             font-size: 16px;
             cursor: pointer;
         }
+
+
+        /* ==========================================
+           ניווט בין פרקים
+        ========================================== */
 
         .chapter-navigation {
             display: flex;
@@ -263,6 +353,11 @@
         .navigation-button:active {
             transform: scale(0.98);
         }
+
+
+        /* ==========================================
+           מסך סיום
+        ========================================== */
 
         .finish-screen {
             min-height: 70vh;
@@ -306,7 +401,9 @@
 <div class="container">
 
 
-    <!-- מסך ראשי -->
+    <!-- ==========================================
+         מסך ראשי
+    ========================================== -->
 
     <div id="home-screen">
 
@@ -319,7 +416,7 @@
         </h1>
 
         <div class="subtitle">
-            לקריאה בכל מקום ובכל עת
+            לקריאת תהילים בכל עת
         </div>
 
 
@@ -346,10 +443,23 @@
             <span class="emoji">❤️</span>
         </button>
 
+
+        <!-- מועדפים -->
+
+        <button
+            class="menu-button"
+            onclick="showFavorites()"
+        >
+            מועדפים
+            <span class="emoji">❤️</span>
+        </button>
+
     </div>
 
 
-    <!-- לפי פרק -->
+    <!-- ==========================================
+         לפי פרק
+    ========================================== -->
 
     <div
         id="chapters-screen"
@@ -382,7 +492,52 @@
     </div>
 
 
-    <!-- לפי יום -->
+    <!-- ==========================================
+         מועדפים
+    ========================================== -->
+
+    <div
+        id="favorites-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showHome()"
+        >
+            → חזרה
+        </button>
+
+
+        <h1>
+            מועדפים ❤️
+        </h1>
+
+
+        <div class="subtitle">
+            הפרקים ששמרת
+        </div>
+
+
+        <div
+            id="favorites"
+            class="chapter-grid"
+        ></div>
+
+
+        <div
+            id="favorites-empty"
+            class="favorites-empty hidden"
+        >
+            עדיין לא שמרת פרקים למועדפים ❤️
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         לפי יום
+    ========================================== -->
 
     <div
         id="days-screen"
@@ -439,7 +594,9 @@
     </div>
 
 
-    <!-- קריאת פרק -->
+    <!-- ==========================================
+         קריאת פרק
+    ========================================== -->
 
     <div
         id="reading-screen"
@@ -448,11 +605,26 @@
 
         <div class="reading-header">
 
+
+            <!-- חזרה -->
+
             <button
                 class="reading-back"
                 onclick="backFromReading()"
             >
                 → חזרה
+            </button>
+
+
+            <!-- לב -->
+
+            <button
+                id="favorite-button"
+                class="favorite-button"
+                onclick="toggleFavorite()"
+                aria-label="הוספה למועדפים"
+            >
+                ♡
             </button>
 
 
@@ -510,7 +682,7 @@
         <div class="chapter-navigation">
 
 
-            <!-- צד ימין -->
+            <!-- ימין -->
 
             <button
                 id="previous-button"
@@ -521,7 +693,7 @@
             </button>
 
 
-            <!-- צד שמאל -->
+            <!-- שמאל -->
 
             <button
                 id="next-button"
@@ -545,7 +717,9 @@
     </div>
 
 
-    <!-- מסך סיום -->
+    <!-- ==========================================
+         מסך סיום
+    ========================================== -->
 
     <div
         id="finish-screen"
