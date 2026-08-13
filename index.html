@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="IMG_7996.jpeg">
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -22,25 +23,44 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: auto;
-            padding: 40px 20px;
+            padding: 30px 15px 40px;
             text-align: center;
         }
 
-        .icon {
-            font-size: 55px;
-            margin-bottom: 10px;
+        .top-icon {
+            font-size: 45px;
+            margin-bottom: 5px;
         }
 
         h1 {
             margin: 0;
-            font-size: 32px;
+            font-size: 30px;
         }
 
         .subtitle {
             color: #666;
-            margin: 10px 0 35px;
+            margin-top: 8px;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .back-button {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.08);
+            font-size: 17px;
+            cursor: pointer;
+            text-align: right;
+        }
+
+        .back-button:active {
+            transform: scale(0.98);
         }
 
         .menu-button {
@@ -50,7 +70,7 @@
             border: none;
             border-radius: 12px;
             background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             font-size: 18px;
             text-align: right;
             cursor: pointer;
@@ -63,6 +83,32 @@
         .emoji {
             margin-right: 10px;
         }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chapter-button {
+            min-height: 48px;
+            border: none;
+            border-radius: 9px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .chapter-button:active {
+            transform: scale(0.95);
+        }
+
+        .hidden {
+            display: none;
+        }
+
     </style>
 </head>
 
@@ -70,30 +116,91 @@
 
     <div class="container">
 
-        <div class="icon">📖</div>
+        <!-- מסך הבית -->
 
-        <h1>תהילים</h1>
+        <div id="home-screen">
 
-        <div class="subtitle">
-            לקריאה בכל מקום ובכל עת
+            <div class="top-icon">📖</div>
+
+            <h1>תהילים</h1>
+
+            <div class="subtitle">
+                לקריאת תהילים בכל עת
+            </div>
+
+            <button class="menu-button" onclick="showChapters()">
+                לפי פרק
+                <span class="emoji">📖</span>
+            </button>
+
+            <button class="menu-button">
+                לפי יום
+                <span class="emoji">📅</span>
+            </button>
+
+            <button class="menu-button">
+                לפי יום בחודש
+                <span class="emoji">🗓️</span>
+            </button>
+
+            <button class="menu-button">
+                לפי נושא
+                <span class="emoji">❤️</span>
+            </button>
+
         </div>
 
-        <button class="menu-button">
-            לפי פרק
-            <span class="emoji">📖</span>
-        </button>
 
-        <button class="menu-button">
-            לפי יום
-            <span class="emoji">📅</span>
-        </button>
+        <!-- מסך בחירת פרק -->
 
-        <button class="menu-button">
-            לפי נושא
-            <span class="emoji">🎯</span>
-        </button>
+        <div id="chapters-screen" class="hidden">
+
+            <button class="back-button" onclick="showHome()">
+                ← חזרה
+            </button>
+
+            <div class="top-icon">📖</div>
+
+            <h1>לפי פרק</h1>
+
+            <div class="subtitle">
+                בחר את הפרק שברצונך לקרוא
+            </div>
+
+            <div id="chapters" class="chapter-grid"></div>
+
+        </div>
 
     </div>
+
+
+    <!-- חיבור קובץ JavaScript -->
+
+    <script src="app.js"></script>
+
+
+    <!-- מעבר בין המסכים -->
+
+    <script>
+
+        function showChapters() {
+
+            document.getElementById("home-screen").classList.add("hidden");
+
+            document.getElementById("chapters-screen").classList.remove("hidden");
+
+        }
+
+
+        function showHome() {
+
+            document.getElementById("chapters-screen").classList.add("hidden");
+
+            document.getElementById("home-screen").classList.remove("hidden");
+
+        }
+
+    </script>
 
 </body>
 
