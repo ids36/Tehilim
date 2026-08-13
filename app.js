@@ -15,7 +15,6 @@ let currentDayEnd = null;
 // מועדפים
 // ==========================================
 
-// שליפת המועדפים מהדפדפן
 function getFavorites() {
 
     try {
@@ -53,11 +52,12 @@ function getFavorites() {
         return [];
 
     }
+
 }
 
 
 // ==========================================
-// שמירת המועדפים
+// שמירת מועדפים
 // ==========================================
 
 function saveFavorites(favorites) {
@@ -74,6 +74,7 @@ function saveFavorites(favorites) {
         console.error(error);
 
     }
+
 }
 
 
@@ -87,11 +88,12 @@ function isFavorite(chapterNumber) {
         getFavorites();
 
     return favorites.includes(chapterNumber);
+
 }
 
 
 // ==========================================
-// הוספה למועדפים
+// הוספת פרק למועדפים
 // ==========================================
 
 function addFavorite(chapterNumber) {
@@ -105,7 +107,6 @@ function addFavorite(chapterNumber) {
 
     }
 
-    // תמיד למיין לפי מספר הפרק
     favorites.sort(function (a, b) {
 
         return a - b;
@@ -118,7 +119,7 @@ function addFavorite(chapterNumber) {
 
 
 // ==========================================
-// הסרה מהמועדפים
+// הסרת פרק מהמועדפים
 // ==========================================
 
 function removeFavorite(chapterNumber) {
@@ -166,13 +167,15 @@ window.toggleFavorite = function () {
 
 
 // ==========================================
-// עדכון הלב במסך
+// עדכון הלב
 // ==========================================
 
 function updateFavoriteButton() {
 
     const button =
-        document.getElementById("favorite-button");
+        document.getElementById(
+            "favorite-button"
+        );
 
     if (!button) {
         return;
@@ -220,6 +223,7 @@ function updateFavoriteButton() {
 function numberToHebrew(number) {
 
     const values = [
+
         [400, "ת"],
         [300, "ש"],
         [200, "ר"],
@@ -242,9 +246,12 @@ function numberToHebrew(number) {
         [3, "ג"],
         [2, "ב"],
         [1, "א"]
+
     ];
 
+
     let result = "";
+
 
     for (const [value, letter] of values) {
 
@@ -371,20 +378,24 @@ function createChapterButtons() {
         button.className =
             "chapter-button";
 
+
         button.textContent =
             numberToHebrew(i);
 
 
         button.onclick = function () {
 
-            readingSource = "chapters";
+            readingSource =
+                "chapters";
 
             openChapter(i);
 
         };
 
 
-        container.appendChild(button);
+        container.appendChild(
+            button
+        );
 
     }
 
@@ -398,7 +409,9 @@ function createChapterButtons() {
 function createDayChapterButtons(dayNumber) {
 
     const container =
-        document.getElementById("day-chapters");
+        document.getElementById(
+            "day-chapters"
+        );
 
     if (!container) {
         return;
@@ -421,8 +434,10 @@ function createDayChapterButtons(dayNumber) {
         const button =
             document.createElement("button");
 
+
         button.className =
             "chapter-button";
+
 
         button.textContent =
             numberToHebrew(i);
@@ -430,23 +445,30 @@ function createDayChapterButtons(dayNumber) {
 
         button.onclick = function () {
 
-            readingSource = "day";
+            readingSource =
+                "day";
+
 
             currentDayNumber =
                 dayNumber;
 
+
             currentDayStart =
                 dayData.chapters[0];
 
+
             currentDayEnd =
                 dayData.chapters[1];
+
 
             openChapter(i);
 
         };
 
 
-        container.appendChild(button);
+        container.appendChild(
+            button
+        );
 
     }
 
@@ -454,13 +476,15 @@ function createDayChapterButtons(dayNumber) {
 
 
 // ==========================================
-// יצירת כפתורי ימים נוספים
+// יצירת ימים נוספים
 // ==========================================
 
 function createOtherDaysButtons(currentDay) {
 
     const container =
-        document.getElementById("other-days");
+        document.getElementById(
+            "other-days"
+        );
 
     if (!container) {
         return;
@@ -480,8 +504,10 @@ function createOtherDaysButtons(currentDay) {
         const button =
             document.createElement("button");
 
+
         button.className =
             "day-button";
+
 
         button.textContent =
             dayNames[day];
@@ -494,7 +520,9 @@ function createOtherDaysButtons(currentDay) {
         };
 
 
-        container.appendChild(button);
+        container.appendChild(
+            button
+        );
 
     }
 
@@ -553,15 +581,20 @@ function showSpecificDay(dayNumber) {
         "פרקי " + dayData.name;
 
 
-    createDayChapterButtons(dayNumber);
+    createDayChapterButtons(
+        dayNumber
+    );
 
-    createOtherDaysButtons(dayNumber);
+
+    createOtherDaysButtons(
+        dayNumber
+    );
 
 }
 
 
 // ==========================================
-// פתיחת "לפי יום"
+// פתיחת לפי יום
 // ==========================================
 
 window.showDays = function () {
@@ -616,16 +649,21 @@ window.showFavorites = function () {
 
 
 // ==========================================
-// יצירת כפתורי המועדפים
+// יצירת כפתורי מועדפים
 // ==========================================
 
 function createFavoriteButtons() {
 
     const container =
-        document.getElementById("favorites");
+        document.getElementById(
+            "favorites"
+        );
+
 
     const emptyMessage =
-        document.getElementById("favorites-empty");
+        document.getElementById(
+            "favorites-empty"
+        );
 
 
     if (!container || !emptyMessage) {
@@ -640,7 +678,6 @@ function createFavoriteButtons() {
         getFavorites();
 
 
-    // תמיד לפי סדר הפרקים
     favorites.sort(function (a, b) {
 
         return a - b;
@@ -648,7 +685,9 @@ function createFavoriteButtons() {
     });
 
 
-    saveFavorites(favorites);
+    saveFavorites(
+        favorites
+    );
 
 
     if (favorites.length === 0) {
@@ -667,32 +706,47 @@ function createFavoriteButtons() {
     );
 
 
-    favorites.forEach(function (chapterNumber) {
+    favorites.forEach(
+        function (chapterNumber) {
 
-        const button =
-            document.createElement("button");
-
-        button.className =
-            "chapter-button";
-
-
-        button.textContent =
-            "פרק " +
-            numberToHebrew(chapterNumber);
+            const button =
+                document.createElement(
+                    "button"
+                );
 
 
-        button.onclick = function () {
-
-            readingSource = "favorites";
-
-            openChapter(chapterNumber);
-
-        };
+            button.className =
+                "chapter-button";
 
 
-        container.appendChild(button);
+            // רק המספר העברי,
+            // בלי המילה "פרק"
+            button.textContent =
+                numberToHebrew(
+                    chapterNumber
+                );
 
-    });
+
+            button.onclick =
+                function () {
+
+                    readingSource =
+                        "favorites";
+
+
+                    openChapter(
+                        chapterNumber
+                    );
+
+                };
+
+
+            container.appendChild(
+                button
+            );
+
+        }
+    );
 
 }
 
@@ -783,7 +837,9 @@ function backFromReading() {
 
         showDays();
 
-    } else if (readingSource === "favorites") {
+    } else if (
+        readingSource === "favorites"
+    ) {
 
         showFavorites();
 
@@ -838,241 +894,254 @@ function showReadingScreen() {
 // פתיחת פרק
 // ==========================================
 
-window.openChapter = async function (chapterNumber) {
+window.openChapter =
+    async function (chapterNumber) {
 
-    currentChapter =
-        chapterNumber;
+        currentChapter =
+            chapterNumber;
 
 
-    showReadingScreen();
+        showReadingScreen();
 
 
-    const title =
-        document.getElementById(
-            "reading-title"
-        );
-
-
-    const dayTitle =
-        document.getElementById(
-            "reading-day-title"
-        );
-
-
-    const textContainer =
-        document.getElementById(
-            "reading-text"
-        );
-
-
-    const loading =
-        document.getElementById(
-            "reading-loading"
-        );
-
-
-    const error =
-        document.getElementById(
-            "reading-error"
-        );
-
-
-    const finishButton =
-        document.getElementById(
-            "finish-button"
-        );
-
-
-    const previousButton =
-        document.getElementById(
-            "previous-button"
-        );
-
-
-    const nextButton =
-        document.getElementById(
-            "next-button"
-        );
-
-
-    title.textContent =
-        "תהילים " +
-        numberToHebrew(chapterNumber);
-
-
-    // ==========================================
-    // כותרת לפי יום
-    // ==========================================
-
-    if (readingSource === "day") {
-
-        const dayName =
-            dayNames[currentDayNumber];
-
-
-        dayTitle.textContent =
-            "תהילים ל" +
-            dayName;
-
-    } else {
-
-        dayTitle.textContent = "";
-
-    }
-
-
-    textContainer.innerHTML = "";
-
-
-    error.classList.add(
-        "hidden"
-    );
-
-
-    loading.classList.remove(
-        "hidden"
-    );
-
-
-    finishButton.classList.add(
-        "hidden"
-    );
-
-
-    previousButton.classList.remove(
-        "hidden"
-    );
-
-
-    nextButton.classList.remove(
-        "hidden"
-    );
-
-
-    // ==========================================
-    // עדכון הלב
-    // ==========================================
-
-    updateFavoriteButton();
-
-
-    // ==========================================
-    // הפרק הראשון של היום
-    // ==========================================
-
-    if (
-        readingSource === "day" &&
-        chapterNumber === currentDayStart
-    ) {
-
-        previousButton.classList.add(
-            "hidden"
-        );
-
-    }
-
-
-    // ==========================================
-    // הפרק האחרון של היום
-    // ==========================================
-
-    if (
-        readingSource === "day" &&
-        chapterNumber === currentDayEnd
-    ) {
-
-        finishButton.classList.remove(
-            "hidden"
-        );
-
-        nextButton.classList.add(
-            "hidden"
-        );
-
-    }
-
-
-    try {
-
-        const url =
-            "https://www.sefaria.org/api/v3/texts/Psalms%20" +
-            chapterNumber +
-            "?version=hebrew&return_format=text_only";
-
-
-        const response =
-            await fetch(url);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Sefaria error"
+        const title =
+            document.getElementById(
+                "reading-title"
             );
 
-        }
+
+        const dayTitle =
+            document.getElementById(
+                "reading-day-title"
+            );
 
 
-        const data =
-            await response.json();
+        const textContainer =
+            document.getElementById(
+                "reading-text"
+            );
 
+
+        const loading =
+            document.getElementById(
+                "reading-loading"
+            );
+
+
+        const error =
+            document.getElementById(
+                "reading-error"
+            );
+
+
+        const finishButton =
+            document.getElementById(
+                "finish-button"
+            );
+
+
+        const previousButton =
+            document.getElementById(
+                "previous-button"
+            );
+
+
+        const nextButton =
+            document.getElementById(
+                "next-button"
+            );
+
+
+        title.textContent =
+            "תהילים " +
+            numberToHebrew(
+                chapterNumber
+            );
+
+
+        // ==========================================
+        // כותרת לפי יום
+        // ==========================================
 
         if (
-            !data.versions ||
-            data.versions.length === 0
+            readingSource === "day"
         ) {
 
-            throw new Error(
-                "No text"
-            );
+            const dayName =
+                dayNames[
+                    currentDayNumber
+                ];
+
+
+            dayTitle.textContent =
+                "תהילים ל" +
+                dayName;
+
+        } else {
+
+            dayTitle.textContent =
+                "";
 
         }
 
 
-        const verses =
-            data.versions[0].text;
+        textContainer.innerHTML =
+            "";
 
+
+        error.classList.add(
+            "hidden"
+        );
+
+
+        loading.classList.remove(
+            "hidden"
+        );
+
+
+        finishButton.classList.add(
+            "hidden"
+        );
+
+
+        previousButton.classList.remove(
+            "hidden"
+        );
+
+
+        nextButton.classList.remove(
+            "hidden"
+        );
+
+
+        // ==========================================
+        // עדכון לב
+        // ==========================================
+
+        updateFavoriteButton();
+
+
+        // ==========================================
+        // הפרק הראשון של היום
+        // ==========================================
 
         if (
-            !verses ||
-            verses.length === 0
+            readingSource === "day" &&
+            chapterNumber === currentDayStart
         ) {
 
-            throw new Error(
-                "Empty text"
+            previousButton.classList.add(
+                "hidden"
             );
 
         }
 
 
-        loading.classList.add(
-            "hidden"
-        );
+        // ==========================================
+        // הפרק האחרון של היום
+        // ==========================================
+
+        if (
+            readingSource === "day" &&
+            chapterNumber === currentDayEnd
+        ) {
+
+            finishButton.classList.remove(
+                "hidden"
+            );
 
 
-        displayVerses(verses);
+            nextButton.classList.add(
+                "hidden"
+            );
+
+        }
 
 
-    } catch (err) {
+        try {
 
-        console.error(err);
-
-
-        loading.classList.add(
-            "hidden"
-        );
+            const url =
+                "https://www.sefaria.org/api/v3/texts/Psalms%20" +
+                chapterNumber +
+                "?version=hebrew&return_format=text_only";
 
 
-        textContainer.innerHTML = "";
+            const response =
+                await fetch(url);
 
 
-        error.classList.remove(
-            "hidden"
-        );
+            if (!response.ok) {
 
-    }
+                throw new Error(
+                    "Sefaria error"
+                );
 
-};
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !data.versions ||
+                data.versions.length === 0
+            ) {
+
+                throw new Error(
+                    "No text"
+                );
+
+            }
+
+
+            const verses =
+                data.versions[0].text;
+
+
+            if (
+                !verses ||
+                verses.length === 0
+            ) {
+
+                throw new Error(
+                    "Empty text"
+                );
+
+            }
+
+
+            loading.classList.add(
+                "hidden"
+            );
+
+
+            displayVerses(
+                verses
+            );
+
+
+        } catch (err) {
+
+            console.error(err);
+
+
+            loading.classList.add(
+                "hidden"
+            );
+
+
+            textContainer.innerHTML =
+                "";
+
+
+            error.classList.remove(
+                "hidden"
+            );
+
+        }
+
+    };
 
 
 // ==========================================
@@ -1087,41 +1156,51 @@ function displayVerses(verses) {
         );
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
-    verses.forEach(function (verse, index) {
+    verses.forEach(
+        function (verse, index) {
 
-        const verseElement =
-            document.createElement("div");
-
-
-        verseElement.className =
-            "verse";
-
-
-        // הסרת סימוני פ
-        verse =
-            verse
-                .replace(/\{פ\}/g, "")
-                .replace(/פ(?=\s*$)/g, "")
-                .trim();
+            const verseElement =
+                document.createElement(
+                    "div"
+                );
 
 
-        verseElement.innerHTML =
-            '<span class="verse-number">' +
-            (index + 1) +
-            '</span>' +
-            '<span>' +
-            verse +
-            '</span>';
+            verseElement.className =
+                "verse";
 
 
-        container.appendChild(
-            verseElement
-        );
+            verse =
+                verse
+                    .replace(
+                        /\{פ\}/g,
+                        ""
+                    )
+                    .replace(
+                        /פ(?=\s*$)/g,
+                        ""
+                    )
+                    .trim();
 
-    });
+
+            verseElement.innerHTML =
+                '<span class="verse-number">' +
+                (index + 1) +
+                '</span>' +
+                '<span>' +
+                verse +
+                '</span>';
+
+
+            container.appendChild(
+                verseElement
+            );
+
+        }
+    );
 
 }
 
@@ -1130,94 +1209,115 @@ function displayVerses(verses) {
 // ניסיון נוסף
 // ==========================================
 
-window.retryCurrentChapter = function () {
+window.retryCurrentChapter =
+    function () {
 
-    if (currentChapter !== null) {
+        if (
+            currentChapter !== null
+        ) {
 
-        openChapter(
-            currentChapter
-        );
+            openChapter(
+                currentChapter
+            );
 
-    }
+        }
 
-};
+    };
 
 
 // ==========================================
 // פרק קודם
 // ==========================================
 
-window.previousChapter = function () {
+window.previousChapter =
+    function () {
 
-    if (currentChapter > 1) {
+        if (
+            currentChapter > 1
+        ) {
 
-        openChapter(
-            currentChapter - 1
-        );
+            openChapter(
+                currentChapter - 1
+            );
 
-    }
+        }
 
-};
+    };
 
 
 // ==========================================
 // פרק הבא
 // ==========================================
 
-window.nextChapter = function () {
+window.nextChapter =
+    function () {
 
-    if (currentChapter < 150) {
+        if (
+            currentChapter < 150
+        ) {
 
-        openChapter(
-            currentChapter + 1
-        );
+            openChapter(
+                currentChapter + 1
+            );
 
-    }
+        }
 
-};
+    };
 
 
 // ==========================================
 // סיום פרקי היום
 // ==========================================
 
-window.finishDay = function () {
+window.finishDay =
+    function () {
 
-    document
-        .getElementById("reading-screen")
-        .classList.add("hidden");
+        document
+            .getElementById(
+                "reading-screen"
+            )
+            .classList.add(
+                "hidden"
+            );
 
 
-    document
-        .getElementById("finish-screen")
-        .classList.remove("hidden");
+        document
+            .getElementById(
+                "finish-screen"
+            )
+            .classList.remove(
+                "hidden"
+            );
 
-};
+    };
 
 
 // ==========================================
 // המשך לפרק שאחרי היום
 // ==========================================
 
-window.continueAfterDay = function () {
+window.continueAfterDay =
+    function () {
 
-    const nextChapterNumber =
-        currentDayEnd + 1;
-
-
-    readingSource =
-        "chapters";
+        const nextChapterNumber =
+            currentDayEnd + 1;
 
 
-    if (nextChapterNumber <= 150) {
+        readingSource =
+            "chapters";
 
-        openChapter(
-            nextChapterNumber
-        );
 
-    }
+        if (
+            nextChapterNumber <= 150
+        ) {
 
-};
+            openChapter(
+                nextChapterNumber
+            );
+
+        }
+
+    };
 
 
 // ==========================================
