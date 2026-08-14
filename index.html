@@ -19,8 +19,9 @@
 
     <style>
         #home-screen button {
-    text-align: center;
-}
+            text-align: center;
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -63,7 +64,6 @@
         .hidden {
             display: none !important;
         }
-
 
         /* ==========================================
            כפתורי עליון במסך הבית
@@ -127,13 +127,12 @@
         }
 
         .home-settings-button svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             display: block;
             margin: 0;
             transform: translate(0, 0);
         }
-
 
         /* ==========================================
            כפתורי מסך ראשי
@@ -161,7 +160,6 @@
             margin-right: 10px;
         }
 
-
         /* ==========================================
            כפתור חזרה
         ========================================== */
@@ -181,7 +179,6 @@
             cursor: pointer;
             color: #222;
         }
-
 
         /* ==========================================
            כפתורי פרקים
@@ -209,7 +206,6 @@
             transform: scale(0.95);
         }
 
-
         /* ==========================================
            מועדפים
         ========================================== */
@@ -221,7 +217,6 @@
             font-size: 17px;
             line-height: 1.6;
         }
-
 
         /* ==========================================
            לפי יום
@@ -275,7 +270,6 @@
             transform: scale(0.97);
         }
 
-
         /* ==========================================
            תפילות
         ========================================== */
@@ -305,7 +299,6 @@
             transform: scale(0.98);
         }
 
-
         /* ==========================================
            מסך תפילה
         ========================================== */
@@ -326,7 +319,6 @@
         .prayer-paragraph {
             margin-bottom: 18px;
         }
-
 
         /* ==========================================
            מסך קריאת פרק
@@ -351,7 +343,6 @@
             box-shadow: 0 2px 7px rgba(0,0,0,0.08);
             color: #222;
         }
-
 
         /* ==========================================
            לב מועדפים
@@ -388,7 +379,6 @@
             transform: scale(0.92);
         }
 
-
         .reading-day-title {
             text-align: center;
             padding-top: 8px;
@@ -422,7 +412,6 @@
             vertical-align: top;
         }
 
-
         /* ==========================================
            טעינה
         ========================================== */
@@ -433,7 +422,6 @@
             color: #666;
             font-size: 17px;
         }
-
 
         /* ==========================================
            תקלה
@@ -457,7 +445,6 @@
             cursor: pointer;
             color: #222;
         }
-
 
         /* ==========================================
            ניווט בין פרקים
@@ -486,7 +473,6 @@
         .navigation-button:active {
             transform: scale(0.98);
         }
-
 
         /* ==========================================
            מסך סיום
@@ -525,7 +511,6 @@
             transform: scale(0.98);
         }
 
-
         /* ==========================================
            לעילוי נשמת
         ========================================== */
@@ -537,7 +522,6 @@
             font-size: 15px;
             line-height: 1.6;
         }
-
 
         /* ==========================================
            חיפוש
@@ -619,7 +603,6 @@
             line-height: 1.6;
         }
 
-
         /* ==========================================
            הגדרות
         ========================================== */
@@ -681,7 +664,6 @@
             line-height: 1.7;
             font-size: 16px;
         }
-
 
         /* ==========================================
            מצב כהה
@@ -749,11 +731,9 @@
 
 </head>
 
-
 <body>
 
 <div class="container">
-
 
     <!-- ==========================================
          מסך ראשי
@@ -794,12 +774,13 @@
 
             </button>
 
-
             <button
                 class="home-top-button home-settings-button"
                 onclick="showSettings()"
                 aria-label="הגדרות"
             >
+
+                <!-- גלגל שיניים ברור יותר -->
 
                 <svg
                     viewBox="0 0 24 24"
@@ -810,39 +791,38 @@
                     stroke-linejoin="round"
                     aria-hidden="true"
                 >
+
                     <circle
                         cx="12"
                         cy="12"
-                        r="3"
+                        r="3.2"
                     ></circle>
 
                     <path
-                        d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2A1.7 1.7 0 0 0 8.46 10a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15z"
+                        d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.05.05-1.8 1.8-.05-.05A1.7 1.7 0 0 0 16.06 18.34a1.7 1.7 0 0 0-1.56 1.56v.1h-2.54v-.1A1.7 1.7 0 0 0 10.4 18.34a1.7 1.7 0 0 0-1.88.34l-.05.05-1.8-1.8.05-.05A1.7 1.7 0 0 0 7.06 15a1.7 1.7 0 0 0-1.56-1.03h-.1v-2.54h.1A1.7 1.7 0 0 0 7.06 10a1.7 1.7 0 0 0-.34-1.88l-.05-.05 1.8-1.8.05.05a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.96 5.1V5h2.54v.1A1.7 1.7 0 0 0 16.06 6.66a1.7 1.7 0 0 0 1.88-.34l.05-.05 1.8 1.8-.05.05A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03h.1v2.54h-.1A1.7 1.7 0 0 0 19.4 15Z"
                     ></path>
+
                 </svg>
 
             </button>
 
         </div>
 
-
         <div class="top-icon">
             &nbsp;
         </div>
-
 
         <h1>
             וַאֲנִי תְפִלָּתִי לְךָ
         </h1>
 
         <h3 style="text-align: center;">
-    תהילים ותפילות
-</h3>
+            תהילים ותפילות
+        </h3>
 
         <div class="subtitle">
             לקריאה בכל מקום ובכל עת
         </div>
-
 
         <button
             class="menu-button"
@@ -851,7 +831,6 @@
             לפי פרק
         </button>
 
-
         <button
             class="menu-button"
             onclick="showDays()"
@@ -859,13 +838,11 @@
             לפי יום
         </button>
 
-
         <button
             class="menu-button"
         >
             לפי נושא
         </button>
-
 
         <button
             class="menu-button"
@@ -873,7 +850,6 @@
         >
             תפילות
         </button>
-
 
         <button
             class="menu-button"
@@ -883,13 +859,11 @@
             <span class="emoji">❤️</span>
         </button>
 
-
         <div class="memorial-text">
             לעילוי נשמת לירן שמשון בן אליהו ומלכה
         </div>
 
     </div>
-
 
     <!-- ==========================================
          חיפוש
@@ -907,16 +881,13 @@
             → חזרה
         </button>
 
-
         <h1>
             חיפוש
         </h1>
 
-
         <div class="subtitle">
             חפש מילה או פסוק מתוך ספר תהילים
         </div>
-
 
         <div class="search-box">
 
@@ -929,7 +900,6 @@
                 onkeydown="handleSearchKeydown(event)"
             >
 
-
             <button
                 class="search-button"
                 onclick="performSearch()"
@@ -939,12 +909,10 @@
 
         </div>
 
-
         <div
             id="search-status"
             class="search-status hidden"
         ></div>
-
 
         <div
             id="search-results"
@@ -952,7 +920,6 @@
         ></div>
 
     </div>
-
 
     <!-- ==========================================
          הגדרות
@@ -970,16 +937,13 @@
             → חזרה
         </button>
 
-
         <h1>
             הגדרות
         </h1>
 
-
         <div class="subtitle">
             התאמה אישית של האפליקציה
         </div>
-
 
         <div class="settings-list">
 
@@ -989,13 +953,11 @@
                     גודל המלל
                 </div>
 
-
                 <div class="settings-row">
 
                     <div class="settings-label">
                         טקסט תהילים
                     </div>
-
 
                     <div class="settings-buttons">
 
@@ -1007,7 +969,6 @@
                             קטן
                         </button>
 
-
                         <button
                             id="font-medium"
                             class="settings-option"
@@ -1015,7 +976,6 @@
                         >
                             רגיל
                         </button>
-
 
                         <button
                             id="font-large"
@@ -1031,20 +991,17 @@
 
             </div>
 
-
             <div class="settings-section">
 
                 <div class="settings-section-title">
                     מראה
                 </div>
 
-
                 <div class="settings-row">
 
                     <div class="settings-label">
                         מצב תצוגה
                     </div>
-
 
                     <div class="settings-buttons">
 
@@ -1055,7 +1012,6 @@
                         >
                             בהיר
                         </button>
-
 
                         <button
                             id="theme-dark"
@@ -1071,13 +1027,11 @@
 
             </div>
 
-
             <div class="settings-section">
 
                 <div class="settings-section-title">
                     אודות
                 </div>
-
 
                 <div class="about-text">
                     וַאֲנִי תְפִלָּתִי לְךָ נועדה לאפשר גישה נוחה, פשוטה ונעימה לקריאת ספר תהילים ותפילות יומיומיות
@@ -1095,7 +1049,6 @@
 
     </div>
 
-
     <!-- ==========================================
          לפי פרק
     ========================================== -->
@@ -1112,16 +1065,13 @@
             → חזרה
         </button>
 
-
         <h1>
             לפי פרק
         </h1>
 
-
         <div class="subtitle">
             בחר את הפרק שברצונך לקרוא
         </div>
-
 
         <div
             id="chapters"
@@ -1129,7 +1079,6 @@
         ></div>
 
     </div>
-
 
     <!-- ==========================================
          מועדפים
@@ -1147,22 +1096,18 @@
             → חזרה
         </button>
 
-
         <h1>
             מועדפים
         </h1>
-
 
         <div class="subtitle">
             הפרקים ששמרת
         </div>
 
-
         <div
             id="favorites"
             class="chapter-grid"
         ></div>
-
 
         <div
             id="favorites-empty"
@@ -1172,7 +1117,6 @@
         </div>
 
     </div>
-
 
     <!-- ==========================================
          לפי יום
@@ -1190,16 +1134,13 @@
             → חזרה
         </button>
 
-
         <h1>
             לפי יום
         </h1>
 
-
         <div class="subtitle">
             חלוקת ספר תהילים לפי ימי השבוע
         </div>
-
 
         <div class="today-box">
 
@@ -1213,17 +1154,14 @@
 
         </div>
 
-
         <div
             id="day-chapters"
             class="chapter-grid"
         ></div>
 
-
         <h2 class="other-days-title">
             לימים נוספים
         </h2>
-
 
         <div
             id="other-days"
@@ -1231,7 +1169,6 @@
         ></div>
 
     </div>
-
 
     <!-- ==========================================
          תפילות
@@ -1249,16 +1186,13 @@
             → חזרה
         </button>
 
-
         <h1>
             תפילות
         </h1>
 
-
         <div class="subtitle">
             נוסח עדות המזרח
         </div>
-
 
         <div
             id="prayers-list"
@@ -1266,7 +1200,6 @@
         ></div>
 
     </div>
-
 
     <!-- ==========================================
          קריאת תפילה
@@ -1284,7 +1217,6 @@
             → חזרה
         </button>
 
-
         <h1
             id="prayer-reading-title"
             class="prayer-reading-title"
@@ -1292,14 +1224,12 @@
             תפילה
         </h1>
 
-
         <div
             id="prayer-reading-loading"
             class="loading hidden"
         >
             טוען את התפילה...
         </div>
-
 
         <div
             id="prayer-reading-error"
@@ -1311,7 +1241,6 @@
                 אל תתייאש/י נס/י שוב❤️
             </div>
 
-
             <button
                 class="retry-button"
                 onclick="retryCurrentPrayer()"
@@ -1321,14 +1250,12 @@
 
         </div>
 
-
         <div
             id="prayer-text"
             class="prayer-text"
         ></div>
 
     </div>
-
 
     <!-- ==========================================
          קריאת פרק
@@ -1348,7 +1275,6 @@
                 → חזרה
             </button>
 
-
             <button
                 id="favorite-button"
                 class="favorite-button"
@@ -1358,12 +1284,10 @@
                 ♡
             </button>
 
-
             <div
                 id="reading-day-title"
                 class="reading-day-title"
             ></div>
-
 
             <h1
                 id="reading-title"
@@ -1374,14 +1298,12 @@
 
         </div>
 
-
         <div
             id="reading-loading"
             class="loading hidden"
         >
             טוען את הפרק...
         </div>
-
 
         <div
             id="reading-error"
@@ -1393,7 +1315,6 @@
                 אל תתייאש/י נס/י שוב❤️
             </div>
 
-
             <button
                 class="retry-button"
                 onclick="retryCurrentChapter()"
@@ -1403,12 +1324,10 @@
 
         </div>
 
-
         <div
             id="reading-text"
             class="reading-text"
         ></div>
-
 
         <div class="chapter-navigation">
 
@@ -1420,7 +1339,6 @@
                 → פרק קודם
             </button>
 
-
             <button
                 id="next-button"
                 class="navigation-button"
@@ -1428,7 +1346,6 @@
             >
                 פרק הבא ←
             </button>
-
 
             <button
                 id="finish-button"
@@ -1441,7 +1358,6 @@
         </div>
 
     </div>
-
 
     <!-- ==========================================
          מסך סיום
@@ -1459,14 +1375,12 @@
                 סיימת את פרקי היום❤️
             </div>
 
-
             <button
                 class="finish-button"
                 onclick="showHome()"
             >
                 חזרה למסך הראשי
             </button>
-
 
             <button
                 class="finish-button"
@@ -1479,9 +1393,7 @@
 
     </div>
 
-
 </div>
-
 
 <script src="app.js"></script>
 
