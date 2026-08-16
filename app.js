@@ -3797,6 +3797,831 @@ window.openParasha =
 
 
 // ==========================================
+// תנ"ך
+// ==========================================
+//
+// כל 39 ספרי התנ"ך (לפי סדר האינדקס של Sefaria),
+// מחולקים לתורה / נביאים / כתובים,
+// כל ספר עם ה-id שלו ב-Sefaria ומספר הפרקים המדויק.
+//
+// ה-id הוא בדיוק השם שצריך לשלוח ל-Sefaria API
+// (למשל "I Samuel", "Song of Songs" וכו').
+//
+
+const tanakhBooks = [
+
+    // ===== תורה =====
+
+    { id: "Genesis", name: "בראשית", category: "torah", chapters: 50 },
+    { id: "Exodus", name: "שמות", category: "torah", chapters: 40 },
+    { id: "Leviticus", name: "ויקרא", category: "torah", chapters: 27 },
+    { id: "Numbers", name: "במדבר", category: "torah", chapters: 36 },
+    { id: "Deuteronomy", name: "דברים", category: "torah", chapters: 34 },
+
+    // ===== נביאים =====
+
+    { id: "Joshua", name: "יהושע", category: "prophets", chapters: 24 },
+    { id: "Judges", name: "שופטים", category: "prophets", chapters: 21 },
+    { id: "I Samuel", name: "שמואל א", category: "prophets", chapters: 31 },
+    { id: "II Samuel", name: "שמואל ב", category: "prophets", chapters: 24 },
+    { id: "I Kings", name: "מלכים א", category: "prophets", chapters: 22 },
+    { id: "II Kings", name: "מלכים ב", category: "prophets", chapters: 25 },
+    { id: "Isaiah", name: "ישעיהו", category: "prophets", chapters: 66 },
+    { id: "Jeremiah", name: "ירמיהו", category: "prophets", chapters: 52 },
+    { id: "Ezekiel", name: "יחזקאל", category: "prophets", chapters: 48 },
+    { id: "Hosea", name: "הושע", category: "prophets", chapters: 14 },
+    { id: "Joel", name: "יואל", category: "prophets", chapters: 4 },
+    { id: "Amos", name: "עמוס", category: "prophets", chapters: 9 },
+    { id: "Obadiah", name: "עובדיה", category: "prophets", chapters: 1 },
+    { id: "Jonah", name: "יונה", category: "prophets", chapters: 4 },
+    { id: "Micah", name: "מיכה", category: "prophets", chapters: 7 },
+    { id: "Nahum", name: "נחום", category: "prophets", chapters: 3 },
+    { id: "Habakkuk", name: "חבקוק", category: "prophets", chapters: 3 },
+    { id: "Zephaniah", name: "צפניה", category: "prophets", chapters: 3 },
+    { id: "Haggai", name: "חגי", category: "prophets", chapters: 2 },
+    { id: "Zechariah", name: "זכריה", category: "prophets", chapters: 14 },
+    { id: "Malachi", name: "מלאכי", category: "prophets", chapters: 3 },
+
+    // ===== כתובים =====
+
+    { id: "Psalms", name: "תהילים", category: "writings", chapters: 150 },
+    { id: "Proverbs", name: "משלי", category: "writings", chapters: 31 },
+    { id: "Job", name: "איוב", category: "writings", chapters: 42 },
+    { id: "Song of Songs", name: "שיר השירים", category: "writings", chapters: 8 },
+    { id: "Ruth", name: "רות", category: "writings", chapters: 4 },
+    { id: "Lamentations", name: "איכה", category: "writings", chapters: 5 },
+    { id: "Ecclesiastes", name: "קהלת", category: "writings", chapters: 12 },
+    { id: "Esther", name: "אסתר", category: "writings", chapters: 10 },
+    { id: "Daniel", name: "דניאל", category: "writings", chapters: 12 },
+    { id: "Ezra", name: "עזרא", category: "writings", chapters: 10 },
+    { id: "Nehemiah", name: "נחמיה", category: "writings", chapters: 13 },
+    { id: "I Chronicles", name: "דברי הימים א", category: "writings", chapters: 29 },
+    { id: "II Chronicles", name: "דברי הימים ב", category: "writings", chapters: 36 }
+
+];
+
+
+// ==========================================
+// שמות הקטגוריות של התנ"ך
+// ==========================================
+
+const tanakhCategoryNames = {
+
+    torah: "תורה",
+
+    prophets: "נביאים",
+
+    writings: "כתובים"
+
+};
+
+
+// ==========================================
+// מצב נוכחי - תנ"ך
+// ==========================================
+
+let currentTanakhCategory = null;
+
+let currentTanakhBook = null;
+
+let currentTanakhChapter = null;
+
+
+// ==========================================
+// הסתרת מסכי התנ"ך
+// ==========================================
+//
+// פונקציה נפרדת, לא נוגעת ב-hideAllScreens המקורית.
+// כל פונקציית ניווט חדשה שמציגה מסך תנ"ך קוראת גם
+// ל-hideAllScreens() המקורית וגם לפונקציה הזאת,
+// כדי שאף מסך ישן (מקורי או תנ"ך) לא יישאר גלוי בטעות.
+//
+
+function hideTanakhScreens() {
+
+    const tanakhScreenIds = [
+
+        "tanakh-categories-screen",
+
+        "tanakh-books-screen",
+
+        "tanakh-chapters-screen",
+
+        "tanakh-reading-screen"
+
+    ];
+
+    tanakhScreenIds.forEach(
+        function (id) {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+            if (element) {
+
+                element.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// פתיחת מסך קטגוריות התנ"ך
+// ==========================================
+
+window.showTanakhCategories =
+    function () {
+
+        hideAllScreens();
+
+        hideTanakhScreens();
+
+        const screen =
+            document.getElementById(
+                "tanakh-categories-screen"
+            );
+
+        if (screen) {
+
+            screen.classList.remove(
+                "hidden"
+            );
+
+        }
+
+    };
+
+
+// ==========================================
+// חזרה ממסך קטגוריות התנ"ך לבית
+// ==========================================
+//
+// פונקציה זו מסתירה קודם את מסכי התנ"ך, ורק אז
+// קוראת ל-showHome() המקורית - כדי לא להזדקק
+// לגעת ב-showHome או ב-hideAllScreens המקוריות.
+//
+
+window.backFromTanakhCategories =
+    function () {
+
+        hideTanakhScreens();
+
+        showHome();
+
+    };
+
+
+// ==========================================
+// פתיחת מסך רשימת ספרים לפי קטגוריה
+// ==========================================
+
+window.showTanakhBooks =
+    function (categoryId) {
+
+        currentTanakhCategory =
+            categoryId;
+
+        hideAllScreens();
+
+        hideTanakhScreens();
+
+        const screen =
+            document.getElementById(
+                "tanakh-books-screen"
+            );
+
+        if (screen) {
+
+            screen.classList.remove(
+                "hidden"
+            );
+
+        }
+
+        const title =
+            document.getElementById(
+                "tanakh-books-title"
+            );
+
+        if (title) {
+
+            title.textContent =
+                tanakhCategoryNames[
+                    categoryId
+                ] || "ספרים";
+
+        }
+
+        createTanakhBookButtons(
+            categoryId
+        );
+
+    };
+
+
+// ==========================================
+// יצירת כפתורי הספרים
+// ==========================================
+
+function createTanakhBookButtons(categoryId) {
+
+    const container =
+        document.getElementById(
+            "tanakh-books-list"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML =
+        "";
+
+    const books =
+        tanakhBooks.filter(
+            function (book) {
+
+                return (
+                    book.category ===
+                    categoryId
+                );
+
+            }
+        );
+
+    books.forEach(
+        function (book) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "prayer-button";
+
+            button.textContent =
+                book.name;
+
+            button.onclick =
+                function () {
+
+                    openTanakhBook(
+                        book
+                    );
+
+                };
+
+            container.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// חזרה מרשימת הפרקים לרשימת הספרים
+// ==========================================
+
+window.backFromTanakhChapters =
+    function () {
+
+        showTanakhBooks(
+            currentTanakhCategory
+        );
+
+    };
+
+
+// ==========================================
+// פתיחת ספר - הצגת רשימת הפרקים שלו
+// ==========================================
+
+window.openTanakhBook =
+    function (book) {
+
+        currentTanakhBook =
+            book;
+
+        hideAllScreens();
+
+        hideTanakhScreens();
+
+        const screen =
+            document.getElementById(
+                "tanakh-chapters-screen"
+            );
+
+        if (screen) {
+
+            screen.classList.remove(
+                "hidden"
+            );
+
+        }
+
+        const title =
+            document.getElementById(
+                "tanakh-chapters-title"
+            );
+
+        if (title) {
+
+            title.textContent =
+                book.name;
+
+        }
+
+        createTanakhChapterButtons(
+            book
+        );
+
+    };
+
+
+// ==========================================
+// יצירת כפתורי הפרקים של הספר
+// ==========================================
+
+function createTanakhChapterButtons(book) {
+
+    const container =
+        document.getElementById(
+            "tanakh-chapters"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML =
+        "";
+
+    for (
+        let i = 1;
+        i <= book.chapters;
+        i++
+    ) {
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+        button.className =
+            "chapter-button";
+
+        button.textContent =
+            numberToHebrew(i);
+
+        button.onclick =
+            function () {
+
+                openTanakhChapter(
+                    i
+                );
+
+            };
+
+        container.appendChild(
+            button
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// חזרה מהקריאה לרשימת הפרקים של הספר
+// ==========================================
+
+window.backFromTanakhReading =
+    function () {
+
+        if (currentTanakhBook) {
+
+            openTanakhBook(
+                currentTanakhBook
+            );
+
+        } else {
+
+            showTanakhCategories();
+
+        }
+
+    };
+
+
+// ==========================================
+// החלת גודל טקסט שמור על מסך קריאת התנ"ך
+// ==========================================
+//
+// קוראת בלבד את ההגדרה השמורה (לא נוגעת בפונקציית
+// setTextSize המקורית), כדי שגם טקסט התנ"ך יכבד
+// את גודל הטקסט שהמשתמש בחר בהגדרות.
+//
+
+function applySavedFontSizeToTanakh() {
+
+    const container =
+        document.getElementById(
+            "tanakh-reading-text"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    let savedSize = "medium";
+
+    try {
+
+        savedSize =
+            localStorage.getItem(
+                "tehillimFontSize"
+            ) || "medium";
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+    let fontSize = 20;
+
+    if (savedSize === "small") {
+
+        fontSize = 18;
+
+    } else if (savedSize === "large") {
+
+        fontSize = 23;
+
+    }
+
+    container.style.fontSize =
+        fontSize + "px";
+
+}
+
+
+// ==========================================
+// פתיחת פרק תנ"ך
+// ==========================================
+
+window.openTanakhChapter =
+    async function (chapterNumber) {
+
+        if (!currentTanakhBook) {
+            return;
+        }
+
+        currentTanakhChapter =
+            chapterNumber;
+
+        hideAllScreens();
+
+        hideTanakhScreens();
+
+        const screen =
+            document.getElementById(
+                "tanakh-reading-screen"
+            );
+
+        if (screen) {
+
+            screen.classList.remove(
+                "hidden"
+            );
+
+        }
+
+        const title =
+            document.getElementById(
+                "tanakh-reading-title"
+            );
+
+        const textContainer =
+            document.getElementById(
+                "tanakh-reading-text"
+            );
+
+        const loading =
+            document.getElementById(
+                "tanakh-reading-loading"
+            );
+
+        const error =
+            document.getElementById(
+                "tanakh-reading-error"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "tanakh-previous-button"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "tanakh-next-button"
+            );
+
+        title.textContent =
+            currentTanakhBook.name +
+            " " +
+            numberToHebrew(
+                chapterNumber
+            );
+
+        textContainer.innerHTML =
+            "";
+
+        error.classList.add(
+            "hidden"
+        );
+
+        loading.classList.remove(
+            "hidden"
+        );
+
+        previousButton.classList.toggle(
+            "hidden",
+            chapterNumber <= 1
+        );
+
+        nextButton.classList.toggle(
+            "hidden",
+            chapterNumber >=
+                currentTanakhBook.chapters
+        );
+
+        try {
+
+            const ref =
+                currentTanakhBook.id +
+                " " +
+                chapterNumber;
+
+            const url =
+                "https://www.sefaria.org/api/v3/texts/" +
+                encodeURIComponent(
+                    ref
+                ) +
+                "?version=hebrew&return_format=text_only";
+
+            const response =
+                await fetch(url);
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Sefaria Tanakh error: " +
+                    ref
+                );
+
+            }
+
+            const data =
+                await response.json();
+
+            if (
+                !data.versions ||
+                data.versions.length === 0
+            ) {
+
+                throw new Error(
+                    "No Hebrew Tanakh version: " +
+                    ref
+                );
+
+            }
+
+            const verses =
+                data.versions[0].text;
+
+            if (
+                !verses ||
+                verses.length === 0
+            ) {
+
+                throw new Error(
+                    "Empty Tanakh text: " +
+                    ref
+                );
+
+            }
+
+            loading.classList.add(
+                "hidden"
+            );
+
+            displayTanakhVerses(
+                verses
+            );
+
+            applySavedFontSizeToTanakh();
+
+        } catch (errorObject) {
+
+            console.error(
+                errorObject
+            );
+
+            loading.classList.add(
+                "hidden"
+            );
+
+            textContainer.innerHTML =
+                "";
+
+            error.classList.remove(
+                "hidden"
+            );
+
+        }
+
+    };
+
+
+// ==========================================
+// הצגת פסוקי התנ"ך
+// ==========================================
+
+function displayTanakhVerses(verses) {
+
+    const container =
+        document.getElementById(
+            "tanakh-reading-text"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML =
+        "";
+
+    let verseList = [];
+
+    function collectVerses(value) {
+
+        if (Array.isArray(value)) {
+
+            value.forEach(
+                function (item) {
+
+                    collectVerses(
+                        item
+                    );
+
+                }
+            );
+
+        } else if (
+            typeof value === "string"
+        ) {
+
+            verseList.push(
+                value
+            );
+
+        }
+
+    }
+
+    collectVerses(
+        verses
+    );
+
+    verseList.forEach(
+        function (verse, index) {
+
+            const verseElement =
+                document.createElement(
+                    "div"
+                );
+
+            verseElement.className =
+                "verse";
+
+            verse =
+                cleanPsalmsText(
+                    verse
+                );
+
+            const numberElement =
+                document.createElement(
+                    "span"
+                );
+
+            numberElement.className =
+                "verse-number";
+
+            numberElement.textContent =
+                index + 1;
+
+            const textElement =
+                document.createElement(
+                    "span"
+                );
+
+            textElement.textContent =
+                verse;
+
+            verseElement.appendChild(
+                numberElement
+            );
+
+            verseElement.appendChild(
+                textElement
+            );
+
+            container.appendChild(
+                verseElement
+            );
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// ניסיון נוסף לפרק תנ"ך
+// ==========================================
+
+window.retryCurrentTanakhChapter =
+    function () {
+
+        if (
+            currentTanakhChapter !== null
+        ) {
+
+            openTanakhChapter(
+                currentTanakhChapter
+            );
+
+        }
+
+    };
+
+
+// ==========================================
+// פרק קודם בתנ"ך
+// ==========================================
+
+window.previousTanakhChapter =
+    function () {
+
+        if (
+            currentTanakhChapter > 1
+        ) {
+
+            openTanakhChapter(
+                currentTanakhChapter - 1
+            );
+
+        }
+
+    };
+
+
+// ==========================================
+// פרק הבא בתנ"ך
+// ==========================================
+
+window.nextTanakhChapter =
+    function () {
+
+        if (
+            currentTanakhBook &&
+            currentTanakhChapter <
+                currentTanakhBook.chapters
+        ) {
+
+            openTanakhChapter(
+                currentTanakhChapter + 1
+            );
+
+        }
+
+    };
+
+
+// ==========================================
 // הפעלה
 // ==========================================
 
