@@ -917,6 +917,13 @@
 
         <button
             class="menu-button"
+            onclick="showTanakhCategories()"
+        >
+            תנ״ך
+        </button>
+
+        <button
+            class="menu-button"
             onclick="showFavorites()"
         >
             מועדפים
@@ -1549,6 +1556,203 @@
                 onclick="continueAfterDay()"
             >
                 המשך לפרק הבא
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         תנ"ך - קטגוריות (תורה / נביאים / כתובים)
+    ========================================== -->
+
+    <div
+        id="tanakh-categories-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="backFromTanakhCategories()"
+        >
+            → חזרה
+        </button>
+
+        <h1>
+            תנ״ך
+        </h1>
+
+        <div class="subtitle">
+            בחר חלק מהתנ״ך
+        </div>
+
+        <button
+            class="menu-button"
+            onclick="showTanakhBooks('torah')"
+        >
+            תורה
+        </button>
+
+        <button
+            class="menu-button"
+            onclick="showTanakhBooks('prophets')"
+        >
+            נביאים
+        </button>
+
+        <button
+            class="menu-button"
+            onclick="showTanakhBooks('writings')"
+        >
+            כתובים
+        </button>
+
+    </div>
+
+
+    <!-- ==========================================
+         תנ"ך - רשימת ספרים
+    ========================================== -->
+
+    <div
+        id="tanakh-books-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="showTanakhCategories()"
+        >
+            → חזרה
+        </button>
+
+        <h1
+            id="tanakh-books-title"
+        >
+            ספרים
+        </h1>
+
+        <div class="subtitle">
+            בחר את הספר שברצונך לקרוא
+        </div>
+
+        <div
+            id="tanakh-books-list"
+            class="prayer-grid"
+        ></div>
+
+    </div>
+
+
+    <!-- ==========================================
+         תנ"ך - רשימת פרקים בספר
+    ========================================== -->
+
+    <div
+        id="tanakh-chapters-screen"
+        class="hidden"
+    >
+
+        <button
+            class="back-button"
+            onclick="backFromTanakhChapters()"
+        >
+            → חזרה
+        </button>
+
+        <h1
+            id="tanakh-chapters-title"
+        >
+            ספר
+        </h1>
+
+        <div class="subtitle">
+            בחר את הפרק שברצונך לקרוא
+        </div>
+
+        <div
+            id="tanakh-chapters"
+            class="chapter-grid"
+        ></div>
+
+    </div>
+
+
+    <!-- ==========================================
+         תנ"ך - קריאת פרק
+    ========================================== -->
+
+    <div
+        id="tanakh-reading-screen"
+        class="hidden"
+    >
+
+        <div class="reading-header">
+
+            <button
+                class="reading-back"
+                onclick="backFromTanakhReading()"
+            >
+                → חזרה
+            </button>
+
+            <h1
+                id="tanakh-reading-title"
+                class="reading-title"
+            >
+                תנ״ך
+            </h1>
+
+        </div>
+
+        <div
+            id="tanakh-reading-loading"
+            class="loading hidden"
+        >
+            טוען את הפרק...
+        </div>
+
+        <div
+            id="tanakh-reading-error"
+            class="error-box hidden"
+        >
+
+            <div>
+                קרתה תקלה צדיק/ה<br>
+                אל תתייאש/י נס/י שוב❤️
+            </div>
+
+            <button
+                class="retry-button"
+                onclick="retryCurrentTanakhChapter()"
+            >
+                נסה/י שוב
+            </button>
+
+        </div>
+
+        <div
+            id="tanakh-reading-text"
+            class="reading-text"
+        ></div>
+
+        <div class="chapter-navigation">
+
+            <button
+                id="tanakh-previous-button"
+                class="navigation-button"
+                onclick="previousTanakhChapter()"
+            >
+                → פרק קודם
+            </button>
+
+            <button
+                id="tanakh-next-button"
+                class="navigation-button"
+                onclick="nextTanakhChapter()"
+            >
+                פרק הבא ←
             </button>
 
         </div>
