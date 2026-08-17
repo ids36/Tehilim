@@ -4622,6 +4622,1335 @@ window.nextTanakhChapter =
 
 
 // ==========================================
+// לוח שנה עברי
+// ==========================================
+//
+// המרה בין תאריך עברי לתאריך לועזי מתבצעת באמצעות
+// הלוח העברי המובנה בדפדפן (Intl, לוח "hebrew") - זהו
+// חלק תקני של JavaScript ולא ספרייה חיצונית, וכולל
+// את כל כללי הלוח העברי (שנים מעוברות, אדר א'/ב' וכו').
+//
+// רשימת החגים/הצומות/ימים המיוחדים נקבעת לפי התאריך
+// העברי הקבוע שלהם (זהה בכל שנה), ולכן איננה תלויה
+// בשנה. לצד זה, מסך הלוח שנה מציג גם את פרשת השבוע
+// ודף היומי הנוכחיים ישירות מה-API של Sefaria.
+//
+
+const hebrewCalendarDateFormatter =
+    new Intl.DateTimeFormat(
+        "he-u-ca-hebrew",
+        {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }
+    );
+
+const hebrewCalendarGregorianMonthFormatter =
+    new Intl.DateTimeFormat(
+        "he",
+        {
+            month: "long",
+            year: "numeric"
+        }
+    );
+
+
+// ==========================================
+// עזרים לתאריכים
+// ==========================================
+
+function calendarUTCNoon(year, month, day) {
+
+    return new Date(
+        Date.UTC(
+            year,
+            month - 1,
+            day,
+            12,
+            0,
+            0
+        )
+    );
+
+}
+
+function calendarAddDays(date, days) {
+
+    const result =
+        new Date(date);
+
+    result.setUTCDate(
+        result.getUTCDate() + days
+    );
+
+    return result;
+
+}
+
+function calendarISODate(date) {
+
+    return date.toISOString().slice(0, 10);
+
+}
+
+function calendarToday() {
+
+    const now =
+        new Date();
+
+    return calendarUTCNoon(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        now.getDate()
+    );
+
+}
+
+
+// ==========================================
+// המרת תאריך לועזי לתאריך עברי
+// ==========================================
+
+function gregorianToHebrewParts(date) {
+
+    const parts =
+        hebrewCalendarDateFormatter.formatToParts(
+            date
+        );
+
+    return {
+
+        day: parseInt(
+            parts.find(function (p) { return p.type === "day"; }).value,
+            10
+        ),
+
+        month:
+            parts.find(function (p) { return p.type === "month"; }).value,
+
+        year: parseInt(
+            parts.find(function (p) { return p.type === "year"; }).value,
+            10
+        )
+
+    };
+
+}
+
+
+// ==========================================
+// מיפוי חודשי שנה עברית -> תאריך לועזי
+// ==========================================
+//
+// עבור שנה עברית נתונה, מחזיר אובייקט שממפה כל שם
+// חודש עברי (כולל אדר א'/אדר ב' בשנה מעוברת) לתאריך
+// הלועזי (UTC noon) של היום הראשון באותו חודש.
+//
+
+const hebrewCalendarYearMapCache = {};
+
+function buildHebrewYearMonthMap(hebrewYear) {
+
+    const estimatedGregorianYear =
+        hebrewYear - 3761;
+
+    let cursor =
+        calendarUTCNoon(
+            estimatedGregorianYear,
+            7,
+            1
+        );
+
+    const map = {};
+
+    let previousKey = null;
+
+    let foundYearStart = false;
+
+    let daysWalked = 0;
+
+    while (daysWalked < 900) {
+
+        const parts =
+            gregorianToHebrewParts(
+                cursor
+            );
+
+        const key =
+            parts.year + "|" + parts.month;
+
+        if (key !== previousKey) {
+
+            if (
+                parts.year === hebrewYear &&
+                !(parts.month in map)
+            ) {
+
+                map[parts.month] =
+                    new Date(cursor);
+
+            }
+
+            if (parts.year === hebrewYear) {
+
+                foundYearStart = true;
+
+            }
+
+            if (
+                foundYearStart &&
+                parts.year === hebrewYear + 1
+            ) {
+
+                break;
+
+            }
+
+            previousKey = key;
+
+        }
+
+        cursor =
+            calendarAddDays(cursor, 1);
+
+        daysWalked++;
+
+    }
+
+    return map;
+
+}
+
+function getHebrewYearMonthMap(hebrewYear) {
+
+    if (!hebrewCalendarYearMapCache[hebrewYear]) {
+
+        hebrewCalendarYearMapCache[hebrewYear] =
+            buildHebrewYearMonthMap(
+                hebrewYear
+            );
+
+    }
+
+    return hebrewCalendarYearMapCache[hebrewYear];
+
+}
+
+function getHebrewMonthLength(hebrewYear, monthName) {
+
+    const map =
+        getHebrewYearMonthMap(
+            hebrewYear
+        );
+
+    const start =
+        map[monthName];
+
+    if (!start) {
+        return 0;
+    }
+
+    let length = 0;
+
+    let cursor =
+        new Date(start);
+
+    while (length <= 31) {
+
+        const parts =
+            gregorianToHebrewParts(
+                cursor
+            );
+
+        if (parts.month !== monthName) {
+            break;
+        }
+
+        length++;
+
+        cursor =
+            calendarAddDays(cursor, 1);
+
+    }
+
+    return length;
+
+}
+
+function hebrewDateToGregorian(hebrewYear, monthName, day) {
+
+    const map =
+        getHebrewYearMonthMap(
+            hebrewYear
+        );
+
+    const monthStart =
+        map[monthName];
+
+    if (!monthStart) {
+        return null;
+    }
+
+    return calendarAddDays(
+        monthStart,
+        day - 1
+    );
+
+}
+
+
+// ==========================================
+// רשימת ימים מיוחדים - תאריך עברי קבוע
+// ==========================================
+//
+// כל שורה: חודש עברי + יום בחודש -> שם + סוג.
+// סוגים: holiday (חג), fast (צום),
+// cholhamoed (חול המועד), special (יום מיוחד).
+//
+// חנוכה ופורים מטופלים בנפרד למטה, כי חנוכה חוצה
+// חודשים (כסלו-טבת) ופורים תלוי אם השנה מעוברת.
+//
+
+const fixedHebrewDateEvents = [
+
+    { month: "תשרי", day: 1, name: "ראש השנה", type: "holiday" },
+    { month: "תשרי", day: 2, name: "ראש השנה", type: "holiday" },
+    { month: "תשרי", day: 10, name: "יום כיפור", type: "fast" },
+    { month: "תשרי", day: 15, name: "סוכות", type: "holiday" },
+    { month: "תשרי", day: 16, name: "סוכות", type: "holiday" },
+    { month: "תשרי", day: 17, name: "חול המועד סוכות", type: "cholhamoed" },
+    { month: "תשרי", day: 18, name: "חול המועד סוכות", type: "cholhamoed" },
+    { month: "תשרי", day: 19, name: "חול המועד סוכות", type: "cholhamoed" },
+    { month: "תשרי", day: 20, name: "חול המועד סוכות", type: "cholhamoed" },
+    { month: "תשרי", day: 21, name: "הושענא רבה", type: "special" },
+    { month: "תשרי", day: 22, name: "שמיני עצרת", type: "holiday" },
+    { month: "תשרי", day: 23, name: "שמחת תורה", type: "holiday" },
+
+    { month: "טבת", day: 10, name: "עשרה בטבת", type: "fast" },
+
+    { month: "שבט", day: 15, name: "ט״ו בשבט", type: "special" },
+
+    { month: "ניסן", day: 15, name: "פסח", type: "holiday" },
+    { month: "ניסן", day: 16, name: "פסח", type: "holiday" },
+    { month: "ניסן", day: 17, name: "חול המועד פסח", type: "cholhamoed" },
+    { month: "ניסן", day: 18, name: "חול המועד פסח", type: "cholhamoed" },
+    { month: "ניסן", day: 19, name: "חול המועד פסח", type: "cholhamoed" },
+    { month: "ניסן", day: 20, name: "חול המועד פסח", type: "cholhamoed" },
+    { month: "ניסן", day: 21, name: "שביעי של פסח", type: "holiday" },
+    { month: "ניסן", day: 22, name: "אחרון של פסח", type: "holiday" },
+    { month: "ניסן", day: 27, name: "יום השואה", type: "special" },
+
+    { month: "אייר", day: 4, name: "יום הזיכרון", type: "special" },
+    { month: "אייר", day: 5, name: "יום העצמאות", type: "special" },
+    { month: "אייר", day: 18, name: "ל״ג בעומר", type: "special" },
+    { month: "אייר", day: 28, name: "יום ירושלים", type: "special" },
+
+    { month: "סיוון", day: 6, name: "שבועות", type: "holiday" },
+    { month: "סיוון", day: 7, name: "שבועות", type: "holiday" },
+
+    { month: "אב", day: 15, name: "ט״ו באב", type: "special" }
+
+];
+
+
+// ==========================================
+// בניית רשימת הימים המיוחדים לשנה עברית
+// ==========================================
+
+const hebrewCalendarSpecialDaysCache = {};
+
+function getSpecialDaysForHebrewYear(hebrewYear) {
+
+    if (hebrewCalendarSpecialDaysCache[hebrewYear]) {
+
+        return hebrewCalendarSpecialDaysCache[hebrewYear];
+
+    }
+
+    const results = [];
+
+    fixedHebrewDateEvents.forEach(
+        function (event) {
+
+            const date =
+                hebrewDateToGregorian(
+                    hebrewYear,
+                    event.month,
+                    event.day
+                );
+
+            if (date) {
+
+                results.push({
+                    date: date,
+                    name: event.name,
+                    type: event.type
+                });
+
+            }
+
+        }
+    );
+
+    // חנוכה - 8 ימים החל מכ"ה כסלו, בלי תלות
+    // באורך חודש כסלו (29 או 30 יום)
+
+    const chanukahStart =
+        hebrewDateToGregorian(
+            hebrewYear,
+            "כסלו",
+            25
+        );
+
+    if (chanukahStart) {
+
+        for (let i = 0; i < 8; i++) {
+
+            results.push({
+
+                date:
+                    calendarAddDays(chanukahStart, i),
+
+                name:
+                    "חנוכה - נר " +
+                    numberToHebrew(i + 1),
+
+                type: "holiday"
+
+            });
+
+        }
+
+    }
+
+    // פורים - בשנה מעוברת חל באדר ב', אחרת באדר.
+    // תענית אסתר נדחית ליום חמישי אם י"ג אדר חל בשבת.
+
+    const yearMap =
+        getHebrewYearMonthMap(
+            hebrewYear
+        );
+
+    const purimMonth =
+        yearMap["אדר ב׳"] ? "אדר ב׳" : "אדר";
+
+    const purimDate =
+        hebrewDateToGregorian(
+            hebrewYear,
+            purimMonth,
+            14
+        );
+
+    const shushanPurimDate =
+        hebrewDateToGregorian(
+            hebrewYear,
+            purimMonth,
+            15
+        );
+
+    let taanitEstherDate =
+        hebrewDateToGregorian(
+            hebrewYear,
+            purimMonth,
+            13
+        );
+
+    if (
+        taanitEstherDate &&
+        taanitEstherDate.getUTCDay() === 6
+    ) {
+
+        taanitEstherDate =
+            calendarAddDays(taanitEstherDate, -2);
+
+    }
+
+    if (purimDate) {
+
+        results.push({
+            date: purimDate,
+            name: "פורים",
+            type: "holiday"
+        });
+
+    }
+
+    if (shushanPurimDate) {
+
+        results.push({
+            date: shushanPurimDate,
+            name: "שושן פורים",
+            type: "special"
+        });
+
+    }
+
+    if (taanitEstherDate) {
+
+        results.push({
+            date: taanitEstherDate,
+            name: "תענית אסתר",
+            type: "fast"
+        });
+
+    }
+
+    // צום גדליה - נדחה ליום ראשון אם ג' תשרי חל בשבת
+
+    let gedaliahDate =
+        hebrewDateToGregorian(
+            hebrewYear,
+            "תשרי",
+            3
+        );
+
+    if (
+        gedaliahDate &&
+        gedaliahDate.getUTCDay() === 6
+    ) {
+
+        gedaliahDate =
+            calendarAddDays(gedaliahDate, 1);
+
+    }
+
+    if (gedaliahDate) {
+
+        results.push({
+            date: gedaliahDate,
+            name: "צום גדליה",
+            type: "fast"
+        });
+
+    }
+
+    // י"ז בתמוז - נדחה ליום ראשון אם חל בשבת
+
+    let tammuzFastDate =
+        hebrewDateToGregorian(
+            hebrewYear,
+            "תמוז",
+            17
+        );
+
+    if (
+        tammuzFastDate &&
+        tammuzFastDate.getUTCDay() === 6
+    ) {
+
+        tammuzFastDate =
+            calendarAddDays(tammuzFastDate, 1);
+
+    }
+
+    if (tammuzFastDate) {
+
+        results.push({
+            date: tammuzFastDate,
+            name: "צום שבעה עשר בתמוז",
+            type: "fast"
+        });
+
+    }
+
+    // תשעה באב - נדחה ליום ראשון אם חל בשבת
+
+    let tishaBavDate =
+        hebrewDateToGregorian(
+            hebrewYear,
+            "אב",
+            9
+        );
+
+    if (
+        tishaBavDate &&
+        tishaBavDate.getUTCDay() === 6
+    ) {
+
+        tishaBavDate =
+            calendarAddDays(tishaBavDate, 1);
+
+    }
+
+    if (tishaBavDate) {
+
+        results.push({
+            date: tishaBavDate,
+            name: "תשעה באב",
+            type: "fast"
+        });
+
+    }
+
+    results.sort(
+        function (a, b) {
+
+            return a.date - b.date;
+
+        }
+    );
+
+    hebrewCalendarSpecialDaysCache[hebrewYear] =
+        results;
+
+    return results;
+
+}
+
+
+// ==========================================
+// מצב נוכחי - לוח שנה
+// ==========================================
+
+let currentCalendarHebrewYear = null;
+
+let currentCalendarHebrewMonth = null;
+
+let cachedTodaysSefariaInfo = undefined;
+
+
+// ==========================================
+// הסתרת מסך הלוח שנה
+// ==========================================
+
+function hideCalendarScreens() {
+
+    const screen =
+        document.getElementById(
+            "calendar-screen"
+        );
+
+    if (screen) {
+
+        screen.classList.add(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// פתיחת מסך הלוח שנה
+// ==========================================
+
+window.showHebrewCalendar =
+    function () {
+
+        hideAllScreens();
+
+        hideTanakhScreens();
+
+        hideCalendarScreens();
+
+        const screen =
+            document.getElementById(
+                "calendar-screen"
+            );
+
+        if (screen) {
+
+            screen.classList.remove(
+                "hidden"
+            );
+
+        }
+
+        if (
+            currentCalendarHebrewYear === null ||
+            currentCalendarHebrewMonth === null
+        ) {
+
+            const todayParts =
+                gregorianToHebrewParts(
+                    calendarToday()
+                );
+
+            currentCalendarHebrewYear =
+                todayParts.year;
+
+            currentCalendarHebrewMonth =
+                todayParts.month;
+
+        }
+
+        renderHebrewCalendar();
+
+    };
+
+
+// ==========================================
+// חזרה מהלוח שנה לבית
+// ==========================================
+
+window.backFromCalendar =
+    function () {
+
+        hideCalendarScreens();
+
+        showHome();
+
+    };
+
+
+// ==========================================
+// עיצוב טווח תאריכים לועזיים לכותרת המשנה
+// ==========================================
+
+function formatGregorianRangeLabel(startDate, endDate) {
+
+    const startParts =
+        hebrewCalendarGregorianMonthFormatter.formatToParts(
+            startDate
+        );
+
+    const endParts =
+        hebrewCalendarGregorianMonthFormatter.formatToParts(
+            endDate
+        );
+
+    const startMonth =
+        startParts.find(function (p) { return p.type === "month"; }).value;
+
+    const startYear =
+        startParts.find(function (p) { return p.type === "year"; }).value;
+
+    const endMonth =
+        endParts.find(function (p) { return p.type === "month"; }).value;
+
+    const endYear =
+        endParts.find(function (p) { return p.type === "year"; }).value;
+
+    if (startMonth === endMonth && startYear === endYear) {
+
+        return startMonth + " " + startYear;
+
+    }
+
+    if (startYear === endYear) {
+
+        return (
+            startMonth +
+            "–" +
+            endMonth +
+            " " +
+            startYear
+        );
+
+    }
+
+    return (
+        startMonth +
+        " " +
+        startYear +
+        " – " +
+        endMonth +
+        " " +
+        endYear
+    );
+
+}
+
+
+// ==========================================
+// ציור מסך הלוח שנה
+// ==========================================
+
+function renderHebrewCalendar() {
+
+    const hebrewYear =
+        currentCalendarHebrewYear;
+
+    const monthName =
+        currentCalendarHebrewMonth;
+
+    const monthMap =
+        getHebrewYearMonthMap(
+            hebrewYear
+        );
+
+    const monthStart =
+        monthMap[monthName];
+
+    if (!monthStart) {
+        return;
+    }
+
+    const monthLength =
+        getHebrewMonthLength(
+            hebrewYear,
+            monthName
+        );
+
+    const monthEnd =
+        calendarAddDays(
+            monthStart,
+            monthLength - 1
+        );
+
+    const title =
+        document.getElementById(
+            "calendar-title"
+        );
+
+    if (title) {
+
+        title.textContent =
+            monthName +
+            " " +
+            numberToHebrew(hebrewYear % 1000);
+
+    }
+
+    const subtitle =
+        document.getElementById(
+            "calendar-subtitle"
+        );
+
+    if (subtitle) {
+
+        subtitle.textContent =
+            formatGregorianRangeLabel(
+                monthStart,
+                monthEnd
+            );
+
+    }
+
+    const specialDays =
+        getSpecialDaysForHebrewYear(
+            hebrewYear
+        );
+
+    const specialDaysByDate = {};
+
+    specialDays.forEach(
+        function (event) {
+
+            specialDaysByDate[
+                calendarISODate(event.date)
+            ] = event;
+
+        }
+    );
+
+    const today =
+        calendarToday();
+
+    const todayISO =
+        calendarISODate(today);
+
+    const grid =
+        document.getElementById(
+            "calendar-grid"
+        );
+
+    if (grid) {
+
+        grid.innerHTML =
+            "";
+
+        const paddingCount =
+            monthStart.getUTCDay();
+
+        for (let i = 0; i < paddingCount; i++) {
+
+            const empty =
+                document.createElement(
+                    "div"
+                );
+
+            empty.className =
+                "calendar-day calendar-day-empty";
+
+            grid.appendChild(
+                empty
+            );
+
+        }
+
+        for (let day = 1; day <= monthLength; day++) {
+
+            const cellDate =
+                calendarAddDays(
+                    monthStart,
+                    day - 1
+                );
+
+            const cellISO =
+                calendarISODate(
+                    cellDate
+                );
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+            let cellClass =
+                "calendar-day";
+
+            const event =
+                specialDaysByDate[cellISO];
+
+            if (event) {
+
+                cellClass +=
+                    " calendar-day-" + event.type;
+
+            }
+
+            if (cellISO === todayISO) {
+
+                cellClass +=
+                    " calendar-day-today";
+
+            }
+
+            cell.className =
+                cellClass;
+
+            const hebrewNumber =
+                document.createElement(
+                    "div"
+                );
+
+            hebrewNumber.className =
+                "calendar-day-hebrew";
+
+            hebrewNumber.textContent =
+                numberToHebrew(day);
+
+            const gregorianNumber =
+                document.createElement(
+                    "div"
+                );
+
+            gregorianNumber.className =
+                "calendar-day-gregorian";
+
+            gregorianNumber.textContent =
+                cellDate.getUTCDate();
+
+            cell.appendChild(
+                hebrewNumber
+            );
+
+            cell.appendChild(
+                gregorianNumber
+            );
+
+            grid.appendChild(
+                cell
+            );
+
+        }
+
+    }
+
+    const eventsList =
+        document.getElementById(
+            "calendar-events-list"
+        );
+
+    const eventsEmpty =
+        document.getElementById(
+            "calendar-events-empty"
+        );
+
+    if (eventsList && eventsEmpty) {
+
+        eventsList.innerHTML =
+            "";
+
+        const monthEvents =
+            specialDays.filter(
+                function (event) {
+
+                    return (
+                        event.date >= monthStart &&
+                        event.date <= monthEnd
+                    );
+
+                }
+            );
+
+        if (monthEvents.length === 0) {
+
+            eventsEmpty.classList.remove(
+                "hidden"
+            );
+
+        } else {
+
+            eventsEmpty.classList.add(
+                "hidden"
+            );
+
+            monthEvents.forEach(
+                function (event) {
+
+                    const dayInMonth =
+                        Math.round(
+                            (event.date - monthStart) /
+                            86400000
+                        ) + 1;
+
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
+
+                    row.className =
+                        "calendar-event-row";
+
+                    const label =
+                        document.createElement(
+                            "span"
+                        );
+
+                    label.textContent =
+                        numberToHebrew(dayInMonth) +
+                        " " +
+                        monthName +
+                        " — " +
+                        event.name;
+
+                    const dateLabel =
+                        document.createElement(
+                            "span"
+                        );
+
+                    dateLabel.className =
+                        "calendar-event-date";
+
+                    dateLabel.textContent =
+                        event.date.getUTCDate() +
+                        "." +
+                        (event.date.getUTCMonth() + 1);
+
+                    row.appendChild(
+                        label
+                    );
+
+                    row.appendChild(
+                        dateLabel
+                    );
+
+                    eventsList.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+    updateCalendarTodayInfo();
+
+}
+
+
+// ==========================================
+// חודש קודם / הבא / היום
+// ==========================================
+
+window.previousHebrewMonth =
+    function () {
+
+        const monthMap =
+            getHebrewYearMonthMap(
+                currentCalendarHebrewYear
+            );
+
+        const monthStart =
+            monthMap[currentCalendarHebrewMonth];
+
+        if (!monthStart) {
+            return;
+        }
+
+        const previousDay =
+            calendarAddDays(
+                monthStart,
+                -1
+            );
+
+        const parts =
+            gregorianToHebrewParts(
+                previousDay
+            );
+
+        currentCalendarHebrewYear =
+            parts.year;
+
+        currentCalendarHebrewMonth =
+            parts.month;
+
+        renderHebrewCalendar();
+
+    };
+
+window.nextHebrewMonth =
+    function () {
+
+        const length =
+            getHebrewMonthLength(
+                currentCalendarHebrewYear,
+                currentCalendarHebrewMonth
+            );
+
+        const monthMap =
+            getHebrewYearMonthMap(
+                currentCalendarHebrewYear
+            );
+
+        const monthStart =
+            monthMap[currentCalendarHebrewMonth];
+
+        if (!monthStart) {
+            return;
+        }
+
+        const nextDay =
+            calendarAddDays(
+                monthStart,
+                length
+            );
+
+        const parts =
+            gregorianToHebrewParts(
+                nextDay
+            );
+
+        currentCalendarHebrewYear =
+            parts.year;
+
+        currentCalendarHebrewMonth =
+            parts.month;
+
+        renderHebrewCalendar();
+
+    };
+
+window.goToCurrentHebrewMonth =
+    function () {
+
+        const todayParts =
+            gregorianToHebrewParts(
+                calendarToday()
+            );
+
+        currentCalendarHebrewYear =
+            todayParts.year;
+
+        currentCalendarHebrewMonth =
+            todayParts.month;
+
+        renderHebrewCalendar();
+
+    };
+
+
+// ==========================================
+// מידע יומי מ-Sefaria (פרשת השבוע, דף יומי)
+// ==========================================
+
+async function fetchTodaysSefariaInfo() {
+
+    try {
+
+        const response =
+            await fetch(
+                "https://www.sefaria.org/api/calendars"
+            );
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data =
+            await response.json();
+
+        if (!data.calendar_items) {
+            return null;
+        }
+
+        const parashaItem =
+            data.calendar_items.find(
+                function (item) {
+
+                    return (
+                        item.title &&
+                        item.title.en === "Parashat Hashavua"
+                    );
+
+                }
+            );
+
+        const dafYomiItem =
+            data.calendar_items.find(
+                function (item) {
+
+                    return (
+                        item.title &&
+                        item.title.en === "Daf Yomi"
+                    );
+
+                }
+            );
+
+        return {
+
+            parasha:
+                parashaItem &&
+                parashaItem.displayValue ?
+                    parashaItem.displayValue.he :
+                    null,
+
+            dafYomi:
+                dafYomiItem &&
+                dafYomiItem.displayValue ?
+                    dafYomiItem.displayValue.he :
+                    null
+
+        };
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// ==========================================
+// עדכון תיבת "היום" בלוח השנה
+// ==========================================
+
+async function updateCalendarTodayInfo() {
+
+    const box =
+        document.getElementById(
+            "calendar-today-info"
+        );
+
+    const titleElement =
+        document.getElementById(
+            "calendar-today-title"
+        );
+
+    const descriptionElement =
+        document.getElementById(
+            "calendar-today-description"
+        );
+
+    if (!box || !titleElement || !descriptionElement) {
+        return;
+    }
+
+    const todayParts =
+        gregorianToHebrewParts(
+            calendarToday()
+        );
+
+    function isShowingCurrentMonth() {
+
+        return (
+            todayParts.year === currentCalendarHebrewYear &&
+            todayParts.month === currentCalendarHebrewMonth
+        );
+
+    }
+
+    if (!isShowingCurrentMonth()) {
+
+        box.classList.add(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    box.classList.remove(
+        "hidden"
+    );
+
+    titleElement.textContent =
+        "היום, " +
+        numberToHebrew(todayParts.day) +
+        " " +
+        todayParts.month;
+
+    descriptionElement.textContent =
+        "טוען מידע מ-Sefaria...";
+
+    if (cachedTodaysSefariaInfo === undefined) {
+
+        cachedTodaysSefariaInfo =
+            await fetchTodaysSefariaInfo();
+
+    }
+
+    // ייתכן שבזמן הטעינה המשתמש עבר למסך אחר או לחודש
+    // אחר - במקרה כזה לא לדרוס את מה שמוצג כרגע.
+
+    const screen =
+        document.getElementById(
+            "calendar-screen"
+        );
+
+    if (
+        !screen ||
+        screen.classList.contains("hidden") ||
+        !isShowingCurrentMonth()
+    ) {
+
+        return;
+
+    }
+
+    if (
+        cachedTodaysSefariaInfo &&
+        cachedTodaysSefariaInfo.parasha
+    ) {
+
+        let description =
+            "פרשת השבוע: " +
+            cachedTodaysSefariaInfo.parasha;
+
+        if (cachedTodaysSefariaInfo.dafYomi) {
+
+            description +=
+                " | דף יומי: " +
+                cachedTodaysSefariaInfo.dafYomi;
+
+        }
+
+        descriptionElement.textContent =
+            description;
+
+    } else {
+
+        descriptionElement.textContent =
+            "לוח שנה עברי ולועזי לצד תאריכים מיוחדים";
+
+    }
+
+}
+
+
+// ==========================================
 // הפעלה
 // ==========================================
 
